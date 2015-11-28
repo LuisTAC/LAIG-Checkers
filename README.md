@@ -2,7 +2,7 @@
 
 ### Description
 
-Checkers board game using webgl through a custom library WebCGF
+Checkers board game using webgl through a custom library WebCGF (v0.18)
 
 ### Documentation
 
