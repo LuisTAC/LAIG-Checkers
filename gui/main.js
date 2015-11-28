@@ -16,7 +16,7 @@ files_gui=[dir_gui+'Scene.js'];
 files_connection=[];
 files_logic=[];
 files_models=[];
-files_primitives=[dir_primitives+'MyRectangle.js', dir_primitives+'MyCylinder.js', dir_primitives+'MyTriangle.js', dir_primitives+'MySemiSphere.js', dir_primitives+'MySphere.js', dir_primitives+'MyPatch.js', dir_primitives+'MyPlane.js', dir_primitives+'MyTerrain.js'];
+files_primitives=[dir_primitives+'MyRectangle.js', dir_primitives+'MyCylinder.js', dir_primitives+'MyTriangle.js', dir_primitives+'MySemiSphere.js', dir_primitives+'MySphere.js', dir_primitives+'MyPatch.js', dir_primitives+'MyPlane.js', dir_primitives+'MyTerrain.js', dir_primitives+'MyCircle.js'];
 files_resources=[];
 files_shaders=[];
 
