@@ -34,10 +34,6 @@ Scene.prototype.init = function (application) {
 	this.axis = new CGFaxis(this);
 
     this.setUpdatePeriod(updatePeriod);
-
-    var texture = new CGFtexture(this,dir_resources+"dama_texture.png");
-    var heightmap = new CGFtexture(this,dir_resources+"shadertextures/dama_heightmap.png");
-    this.terrain = new MyTerrain(this, 200, texture, heightmap);
 };
 
 Scene.prototype.initLights = function () {
@@ -114,17 +110,6 @@ Scene.prototype.display = function () {
 	// ---- END Background, camera and axis setup
 
     this.updateLights();
-
-    this.matSILVER.setTexture(this.terrain.tex);
-    this.matSILVER.setTextureWrap ('REPEAT', 'REPEAT');
-    this.matSILVER.apply();
-
-    this.setActiveShader(this.myShader);
-    this.terrain.h_map.bind(1);
-
-    this.terrain.display();
-
-    this.setActiveShader(this.defaultShader);
 };
 
 Scene.prototype.update = function(currTime) {
