@@ -46,6 +46,15 @@ Scene.prototype.initLights = function () {
     this.lights[0].ena=true;
     this.lights[0].setVisible(true);
     this.lights[0].update();
+
+    this.lights[1].setPosition(2, 2, 2, 1);
+    this.lights[1].setAmbient(0, 0, 0, 1);
+    this.lights[1].setDiffuse(1, 1, 1, 1);
+    this.lights[1].setSpecular(1, 1, 1, 1);
+    this.lights[1].enable();
+    this.lights[1].ena=true;
+    this.lights[1].setVisible(true);
+    this.lights[1].update();
 };
 
 Scene.prototype.updateLights = function() {
@@ -110,6 +119,8 @@ Scene.prototype.display = function () {
 	// ---- END Background, camera and axis setup
 
     this.updateLights();
+
+    this.matSILVER.apply();
 };
 
 Scene.prototype.update = function(currTime) {
