@@ -2,6 +2,7 @@ var degToRad = Math.PI/180.0;
 var updatePeriod = 50;
 
 function Scene() {
+    
     CGFscene.call(this);
 };
 
@@ -34,11 +35,35 @@ Scene.prototype.init = function (application) {
 	this.axis = new CGFaxis(this);
 
     this.setUpdatePeriod(updatePeriod);
+
+    //skins
+    this.skin=1;
+
+    //board state
+    this.board_state =  [
+    ['#','#','#','#','#','#','#','#','#','#'],
+    ['#',' ','B',' ','B',' ','B',' ','B','#'],
+    ['#','B',' ','B',' ','B',' ','B',' ','#'],
+    ['#',' ','B',' ','B',' ','B',' ','B','#'],
+    ['#',' ',' ',' ',' ',' ',' ',' ',' ','#'],
+    ['#',' ',' ',' ',' ',' ',' ',' ',' ','#'],
+    ['#','W',' ','W',' ','W',' ','W',' ','#'],
+    ['#',' ','W',' ','W',' ','W',' ','W','#'],
+    ['#','W',' ','W',' ','W',' ','W',' ','#'],
+    ['#','#','#','#','#','#','#','#','#','#']
+    ];
+
+    //models
+
+    this.piece = new Piece(this,5,100);
+
+    this.board = new Board(this,this.matWOOD,this.matWHITE,this.matBLACK);
+
 };
 
 Scene.prototype.initLights = function () {
 
-    this.lights[0].setPosition(0, 2, 0, 1);
+    this.lights[0].setPosition(0, 10, 10, 1);
     this.lights[0].setAmbient(0, 0, 0, 1);
     this.lights[0].setDiffuse(1, 1, 1, 1);
     this.lights[0].setSpecular(1, 1, 1, 1);
@@ -47,7 +72,7 @@ Scene.prototype.initLights = function () {
     this.lights[0].setVisible(true);
     this.lights[0].update();
 
-    this.lights[1].setPosition(2, 2, 2, 1);
+    this.lights[1].setPosition(0, 10, -10, 1);
     this.lights[1].setAmbient(0, 0, 0, 1);
     this.lights[1].setDiffuse(1, 1, 1, 1);
     this.lights[1].setSpecular(1, 1, 1, 1);
@@ -70,16 +95,16 @@ Scene.prototype.updateLights = function() {
 
 Scene.prototype.initCameras = function () {
     
-    this.camera = new CGFcamera(0.4, 0.1, 500, vec3.fromValues(15, 15, 15), vec3.fromValues(0, 0, 0));
+    this.camera = new CGFcamera(0.4, 0.1, 500, vec3.fromValues(0, 10, 20), vec3.fromValues(0, 0, 0));
 };
 
 Scene.prototype.initMaterials = function () {
 
     this.matSILVER = new CGFappearance(this);
-    this.matSILVER.setAmbient(0.4, 0.4, 0.4, 1.0);
-    this.matSILVER.setDiffuse(0.4, 0.4, 0.4, 1.0);
-    this.matSILVER.setSpecular(0.3, 0.3, 0.3, 1.0);
-    this.matSILVER.setShininess(10.0);
+    this.matSILVER.setAmbient(0.2, 0.2, 0.2, 1.0);
+    this.matSILVER.setDiffuse(0.2, 0.2, 0.2, 1.0);
+    this.matSILVER.setSpecular(0.2, 0.2, 0.2, 1.0);
+    this.matSILVER.setShininess(5.0);
 
     this.matGOLD = new CGFappearance(this);
     this.matGOLD.setAmbient(0.5, 0.42, 0.05, 1.0);
@@ -88,16 +113,22 @@ Scene.prototype.initMaterials = function () {
     this.matGOLD.setShininess(10.0);
 
     this.matBLACK = new CGFappearance(this);
-    this.matBLACK.setAmbient(0.01, 0.01, 0.01, 1.0);
-    this.matBLACK.setDiffuse(0.01, 0.01, 0.01, 1.0);
-    this.matBLACK.setSpecular(0.2, 0.2, 0.2, 1.0);
-    this.matBLACK.setShininess(5.0);
+    this.matBLACK.setAmbient(0.07, 0.07, 0.07, 1.0);
+    this.matBLACK.setDiffuse(0.07, 0.07, 0.07, 1.0);
+    this.matBLACK.setSpecular(0.02, 0.02, 0.02, 1.0);
+    this.matBLACK.setShininess(2.0);
 
     this.matWHITE = new CGFappearance(this);
     this.matWHITE.setAmbient(0.99, 0.99, 0.99, 1.0);
     this.matWHITE.setDiffuse(0.99, 0.99, 0.99, 1.0);
-    this.matWHITE.setSpecular(0.8, 0.8, 0.8, 1.0);
-    this.matWHITE.setShininess(10.0);
+    this.matWHITE.setSpecular(0.2, 0.2, 0.2, 1.0);
+    this.matWHITE.setShininess(2.0);
+
+    this.matWOOD = new CGFappearance(this);
+    this.matWOOD.setAmbient(0.59, 0.44, 0.2, 1);
+    this.matWOOD.setDiffuse(0.59, 0.44, 0.2, 1);
+    this.matWOOD.setSpecular(0.15, 0.11, 0.05, 1);
+    this.matWOOD.setShininess(10);
 };
 
 Scene.prototype.display = function () {
@@ -120,7 +151,42 @@ Scene.prototype.display = function () {
 
     this.updateLights();
 
-    this.matSILVER.apply();
+    this.displayBoardState();
+    this.board.display();
+};
+
+Scene.prototype.displayBoardState = function () {
+    
+    this.pushMatrix();
+        this.rotate(-90*degToRad,0,1,0);
+        this.translate(-(1.30*9)/2,0,-(1.30*9)/2);
+        for (var i = 0; i < this.board_state.length; i++) {
+            for (var j = 0; j < this.board_state[i].length; j++) {
+                if(this.board_state[i][j]=='B'||this.board_state[i][j]=='W')
+                {
+                    if(this.board_state[i][j]=='B')
+                    {
+                        if(this.skin==1)
+                            this.matBLACK.apply();
+                        else if(this.skin==2)
+                            this.matSILVER.apply();
+                    }
+                    else if(this.board_state[i][j]=='W')
+                    {
+                        if(this.skin==1)
+                            this.matWHITE.apply();
+                        else if(this.skin==2)
+                            this.matGOLD.apply();
+                    }
+
+                    this.pushMatrix();
+                        this.translate(i*1.30,0,j*1.30);
+                        this.piece.display();
+                    this.popMatrix();
+                }
+            };
+        };
+    this.popMatrix();
 };
 
 Scene.prototype.update = function(currTime) {
