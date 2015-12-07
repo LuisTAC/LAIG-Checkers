@@ -58,7 +58,6 @@ Scene.prototype.init = function (application) {
     this.piece = new Piece(this,5,100);
 
     this.board = new Board(this,this.matWOOD,this.matWHITE,this.matBLACK);
-
 };
 
 Scene.prototype.initLights = function () {
@@ -162,16 +161,16 @@ Scene.prototype.displayBoardState = function () {
         this.translate(-(1.30*9)/2,0,-(1.30*9)/2);
         for (var i = 0; i < this.board_state.length; i++) {
             for (var j = 0; j < this.board_state[i].length; j++) {
-                if(this.board_state[i][j]=='B'||this.board_state[i][j]=='W')
+                if(this.board_state[i][j]=='B'||this.board_state[i][j]=='W' || this.board_state[i][j]=='b' || this.board_state[i][j]=='w')
                 {
-                    if(this.board_state[i][j]=='B')
+                    if(this.board_state[i][j]=='B' || this.board_state[i][j]=='b')
                     {
                         if(this.skin==1)
                             this.matBLACK.apply();
                         else if(this.skin==2)
                             this.matSILVER.apply();
                     }
-                    else if(this.board_state[i][j]=='W')
+                    else if(this.board_state[i][j]=='W' || this.board_state[i][j]=='w')
                     {
                         if(this.skin==1)
                             this.matWHITE.apply();
@@ -183,6 +182,13 @@ Scene.prototype.displayBoardState = function () {
                         this.translate(i*1.30,0,j*1.30);
                         this.piece.display();
                     this.popMatrix();
+                    if(this.board_state[i][j]=='b' || this.board_state[i][j]=='w')
+                    {
+                        this.pushMatrix();
+                            this.translate(i*1.30,0.5,j*1.30);
+                            this.piece.display();
+                        this.popMatrix();
+                    }
                 }
             };
         };
