@@ -99,7 +99,7 @@ public class Server {
 							{
 								if(des_pos_x == curr_pos_x+2)
 								{
-									if(board_to_check[curr_pos_y-1][curr_pos_x+1] == 'B')
+									if(board_to_check[curr_pos_y-1][curr_pos_x+1] == 'B' || board_to_check[curr_pos_y-1][curr_pos_x+1] == 'b')
 									{
 										board_to_check[curr_pos_y][curr_pos_x] = ' ';
 										board_to_check[curr_pos_y-1][curr_pos_x+1] = ' ';
@@ -121,7 +121,7 @@ public class Server {
 								}
 								else if(des_pos_x == curr_pos_x-2)
 								{
-									if(board_to_check[curr_pos_y-1][curr_pos_x-1] == 'B')
+									if(board_to_check[curr_pos_y-1][curr_pos_x-1] == 'B' || board_to_check[curr_pos_y-1][curr_pos_x-1] == 'b')
 									{
 										board_to_check[curr_pos_y][curr_pos_x] = ' ';
 										board_to_check[curr_pos_y-1][curr_pos_x-1] = ' ';
@@ -172,7 +172,7 @@ public class Server {
 							{
 								if(des_pos_x == curr_pos_x+2)
 								{
-									if(board_to_check[curr_pos_y+1][curr_pos_x+1] == 'W')
+									if(board_to_check[curr_pos_y+1][curr_pos_x+1] == 'W' || board_to_check[curr_pos_y+1][curr_pos_x+1] == 'w')
 									{
 										board_to_check[curr_pos_y][curr_pos_x] = ' ';
 										board_to_check[curr_pos_y+1][curr_pos_x+1] = ' ';
@@ -194,7 +194,7 @@ public class Server {
 								}
 								else if(des_pos_x == curr_pos_x-2)
 								{
-									if(board_to_check[curr_pos_y+1][curr_pos_x-1] == 'W')
+									if(board_to_check[curr_pos_y+1][curr_pos_x-1] == 'W' || board_to_check[curr_pos_y+1][curr_pos_x-1] == 'w')
 									{
 										board_to_check[curr_pos_y][curr_pos_x] = ' ';
 										board_to_check[curr_pos_y+1][curr_pos_x-1] = ' ';
@@ -249,7 +249,7 @@ public class Server {
 							{
 								if(des_pos_x == curr_pos_x-2)
 								{
-									if(board_to_check[curr_pos_y-1][curr_pos_x-1] == 'B')
+									if(board_to_check[curr_pos_y-1][curr_pos_x-1] == 'B' || board_to_check[curr_pos_y-1][curr_pos_x-1] == 'b')
 									{
 										board_to_check[curr_pos_y][curr_pos_x] = ' ';
 										board_to_check[des_pos_y][des_pos_x] = 'w';
@@ -261,7 +261,7 @@ public class Server {
 								}
 								else if(des_pos_x == curr_pos_x+2)
 								{
-									if(board_to_check[curr_pos_y-1][curr_pos_x+1] == 'B')
+									if(board_to_check[curr_pos_y-1][curr_pos_x+1] == 'B' || board_to_check[curr_pos_y-1][curr_pos_x+1] == 'b')
 									{
 										board_to_check[curr_pos_y][curr_pos_x] = ' ';
 										board_to_check[des_pos_y][des_pos_x] = 'w';
@@ -276,7 +276,7 @@ public class Server {
 							{
 								if(des_pos_x == curr_pos_x-2)
 								{
-									if(board_to_check[curr_pos_y+1][curr_pos_x-1] == 'B')
+									if(board_to_check[curr_pos_y+1][curr_pos_x-1] == 'B' || board_to_check[curr_pos_y+1][curr_pos_x-1] == 'b')
 									{
 										board_to_check[curr_pos_y][curr_pos_x] = ' ';
 										board_to_check[des_pos_y][des_pos_x] = 'w';
@@ -288,7 +288,7 @@ public class Server {
 								}
 								else if(des_pos_x == curr_pos_x+2)
 								{									
-									if(board_to_check[curr_pos_y+1][curr_pos_x+1] == 'B')
+									if(board_to_check[curr_pos_y+1][curr_pos_x+1] == 'B' || board_to_check[curr_pos_y+1][curr_pos_x+1] == 'b')
 									{
 										board_to_check[curr_pos_y][curr_pos_x] = ' ';
 										board_to_check[des_pos_y][des_pos_x] = 'w';
@@ -333,7 +333,7 @@ public class Server {
 							{
 								if(des_pos_x == curr_pos_x-2)
 								{
-									if(board_to_check[curr_pos_y-1][curr_pos_x-1] == 'W')
+									if(board_to_check[curr_pos_y-1][curr_pos_x-1] == 'W' || board_to_check[curr_pos_y-1][curr_pos_x-1] == 'w')
 									{
 										board_to_check[curr_pos_y][curr_pos_x] = ' ';
 										board_to_check[des_pos_y][des_pos_x] = 'b';
@@ -345,7 +345,7 @@ public class Server {
 								}
 								else if(des_pos_x == curr_pos_x+2)
 								{
-									if(board_to_check[curr_pos_y-1][curr_pos_x+1] == 'W')
+									if(board_to_check[curr_pos_y-1][curr_pos_x+1] == 'W' || board_to_check[curr_pos_y-1][curr_pos_x+1] == 'w')
 									{
 										board_to_check[curr_pos_y][curr_pos_x] = ' ';
 										board_to_check[des_pos_y][des_pos_x] = 'b';
@@ -360,7 +360,7 @@ public class Server {
 							{
 								if(des_pos_x == curr_pos_x-2)
 								{
-									if(board_to_check[curr_pos_y+1][curr_pos_x-1] == 'W')
+									if(board_to_check[curr_pos_y+1][curr_pos_x-1] == 'W' || board_to_check[curr_pos_y+1][curr_pos_x-1] == 'w')
 									{
 										board_to_check[curr_pos_y][curr_pos_x] = ' ';
 										board_to_check[des_pos_y][des_pos_x] = 'b';
@@ -372,7 +372,7 @@ public class Server {
 								}
 								else if(des_pos_x == curr_pos_x+2)
 								{									
-									if(board_to_check[curr_pos_y+1][curr_pos_x+1] == 'W')
+									if(board_to_check[curr_pos_y+1][curr_pos_x+1] == 'W' || board_to_check[curr_pos_y+1][curr_pos_x+1] == 'w')
 									{
 										board_to_check[curr_pos_y][curr_pos_x] = ' ';
 										board_to_check[des_pos_y][des_pos_x] = 'b';
