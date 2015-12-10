@@ -95,7 +95,10 @@ Scene.prototype.updateLights = function() {
 
 Scene.prototype.initCameras = function () {
     
-    this.camera = new CGFcamera(0.4, 0.1, 500, vec3.fromValues(0, 10, 20), vec3.fromValues(0, 0, 0));
+    this.camera = new CGFcamera(0.4, 0.01, 500, vec3.fromValues(0, 10, 20), vec3.fromValues(0, 0, 0));
+    this.cameraDestination = [0,10,20];
+    this.cameraTransition = false;
+    this.transitionTime = 2000;
 };
 
 Scene.prototype.initMaterials = function () {
@@ -198,25 +201,85 @@ Scene.prototype.displayBoardState = function () {
 
 Scene.prototype.update = function(currTime) {
 
-    /**/
+    if(this.cameraTransition) {
+        if(!this.transitionBeg) this.transitionBeg = currTime;
+        else
+        {
+            var time_since_start = currTime - this.transitionBeg;
+            if(time_since_start>=this.transitionTime) {
+                this.camera.setPosition(this.cameraDestination);
+                this.transitionBeg=null;
+                this.cameraTransition=false;
+            }
+            else {
+                var time_perc = time_since_start / this.transitionTime;
+                var new_pos = [this.cameraOrigin[0]+(this.transitionVec[0]*time_perc),
+                this.cameraOrigin[1]+(this.transitionVec[1]*time_perc),
+                this.cameraOrigin[2]+(this.transitionVec[2]*time_perc)];
+                this.camera.setPosition(new_pos);
+            }
+        }
+    }
+    else
+    {
+
+    }
 };
 
 Scene.prototype.cameraTopWhite = function() {
 
-    this.camera.setPosition(vec3.fromValues(0,27.5,0.01));
+    if(!this.cameraTransition) {
+        this.cameraOrigin=[this.camera.position[0], this.camera.position[1], this.camera.position[2]];
+        this.cameraDestination = [0,27.5,0.01];
+        if(!arraysEqual(this.cameraDestination, this.cameraOrigin)) this.calcTransition();
+    }
 }
 
 Scene.prototype.cameraTopBlack = function() {
 
-    this.camera.setPosition(vec3.fromValues(0,27.5,-0.01));
+    if(!this.cameraTransition) {
+        this.cameraOrigin=[this.camera.position[0], this.camera.position[1], this.camera.position[2]];
+        this.cameraDestination = [0,27.5,-0.01];
+        if(!arraysEqual(this.cameraDestination, this.cameraOrigin)) this.calcTransition();
+    }
 }
 
 Scene.prototype.cameraWhite = function() {
 
-    this.camera.setPosition(vec3.fromValues(0,10,20));
+    if(!this.cameraTransition) {
+        this.cameraOrigin=[this.camera.position[0], this.camera.position[1], this.camera.position[2]];
+        this.cameraDestination = [0,10,20];
+        if(!arraysEqual(this.cameraDestination, this.cameraOrigin)) this.calcTransition();
+    }
 }
 
 Scene.prototype.cameraBlack = function() {
 
-    this.camera.setPosition(vec3.fromValues(0,10,-20));
+    if(!this.cameraTransition) {
+        this.cameraOrigin=[this.camera.position[0], this.camera.position[1], this.camera.position[2]];
+        this.cameraDestination = [0,10,-20];
+        if(!arraysEqual(this.cameraDestination, this.cameraOrigin)) this.calcTransition();
+    }
+}
+
+Scene.prototype.calcTransition = function() {
+    this.transitionVec = [this.cameraDestination[0]-this.cameraOrigin[0],
+            this.cameraDestination[1]-this.cameraOrigin[1],
+            this.cameraDestination[2]-this.cameraOrigin[2]];
+
+    this.cameraTransition = true;
+}
+
+function arraysEqual(a, b) {
+  if (a === b) return true;
+  if (a == null || b == null) return false;
+  if (a.length != b.length) return false;
+
+  // If you don't care about the order of the elements inside
+  // the array, you should sort both arrays here.
+
+  for (var i = 0; i < a.length; ++i) {
+    if (a[i] !== b[i]) return false;
+  }
+  return true;
 }
