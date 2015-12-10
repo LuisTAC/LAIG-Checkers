@@ -13,6 +13,7 @@ function Board(scene, matWOOD, matWHITE, matBLACK) {
 	this.side = new MyRectangle(scene,-5.65,0.5,5.65,-0.5)
 
 	this.rectangle = new MyRectangle(scene,-5.15,5.15,5.15,-5.15);
+	this.bottom = new MyRectangle(scene,-5.65,5.65,5.65,-5.65);
 	
 	var controlpoints = [	// U = 0
 						[ // V = 0..2;
@@ -91,6 +92,13 @@ Board.prototype.display = function() {
  		this.rectangle.display();
  	this.scene.popMatrix();
  	
+ 	this.scene.pushMatrix();
+ 		this.scene.translate(0,-1,0);
+ 		this.scene.rotate(90*degToRad,1,0,0);
+ 		this.scene.matWOOD.apply();
+ 		this.bottom.display();
+ 	this.scene.popMatrix();
+
  	this.scene.pushMatrix();
  		this.scene.translate(5.4,0,0);
  		this.scene.scale(1,1,10.3);

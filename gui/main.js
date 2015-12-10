@@ -12,7 +12,7 @@ dir_resources='../resources/';
 dir_shaders='../shaders/';
 
 files_lib=[dir_lib+'CGF.js'];
-files_gui=[dir_gui+'Scene.js'];
+files_gui=[dir_gui+'Scene.js', dir_gui+'MyInterface.js',];
 files_connection=[];
 files_logic=[];
 files_models=[dir_models+'Piece.js', dir_models+'Board.js'];
@@ -28,13 +28,15 @@ files_res=files_res.concat(files_primitives);
 files_res=files_res.concat(files_resources);
 files_res=files_res.concat(files_shaders);
 
+//port =;
+
 serialInclude(files_res.concat([
 main=function()
 {
     // Standard application, scene and interface setup
     var app = new CGFapplication(document.body);
     var myScene = new Scene();
-    myInterface = new CGFinterface();
+    myInterface = new MyInterface();
 
     app.init();
 

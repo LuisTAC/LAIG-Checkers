@@ -4,6 +4,7 @@ var updatePeriod = 50;
 function Scene() {
     
     CGFscene.call(this);
+
 };
 
 Scene.prototype = Object.create(CGFscene.prototype);
@@ -199,3 +200,23 @@ Scene.prototype.update = function(currTime) {
 
     /**/
 };
+
+Scene.prototype.cameraTopWhite = function() {
+
+    this.camera.setPosition(vec3.fromValues(0,27.5,0.01));
+}
+
+Scene.prototype.cameraTopBlack = function() {
+
+    this.camera.setPosition(vec3.fromValues(0,27.5,-0.01));
+}
+
+Scene.prototype.cameraWhite = function() {
+
+    this.camera.setPosition(vec3.fromValues(0,10,20));
+}
+
+Scene.prototype.cameraBlack = function() {
+
+    this.camera.setPosition(vec3.fromValues(0,10,-20));
+}
