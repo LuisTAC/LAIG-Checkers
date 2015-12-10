@@ -4,13 +4,13 @@ public class Server {
 	
 	public static char[][] test_board = 
 			{{'#','#','#','#','#','#','#','#','#','#'},
-			 {'#',' ','B',' ','B',' ','B',' ','B','#'},
+			 {'#',' ',' ',' ','B',' ','B',' ','B','#'},
 			 {'#','B',' ','B',' ','B',' ','B',' ','#'},
-			 {'#',' ','B',' ','B',' ','B',' ','B','#'},
-			 {'#','b',' ',' ',' ',' ',' ',' ',' ','#'},
-			 {'#',' ',' ',' ',' ',' ',' ',' ',' ','#'},
-			 {'#','W',' ',' ',' ','W',' ','W',' ','#'},
-			 {'#',' ','W',' ','W',' ','W',' ','W','#'},
+			 {'#',' ','B',' ',' ',' ','B',' ','B','#'},
+			 {'#',' ',' ',' ',' ','B',' ',' ',' ','#'},
+			 {'#',' ',' ',' ',' ',' ','w',' ',' ','#'},
+			 {'#','W',' ','W',' ','W',' ','W',' ','#'},
+			 {'#',' ','W',' ',' ',' ','W',' ','W','#'},
 			 {'#','W',' ','W',' ','W',' ','W',' ','#'},
 			 {'#','#','#','#','#','#','#','#','#','#'}
 			};
@@ -48,8 +48,81 @@ public class Server {
 		return res;
 	}
 	
+	// Check if a piece can eat another
+	private static Boolean checkEatingMove(char[][] board, String piece_pos)
+	{
+		int[] pos_array = convertPositions(piece_pos);
+		int piece_x = pos_array[0];
+		int piece_y = pos_array[1];
+		char piece_char = board[piece_y][piece_x];
+		
+		switch(piece_char)
+		{
+		 	case 'W':
+		 		if(board[piece_y-1][piece_x-1] == 'B' || board[piece_y-1][piece_x-1] == 'b')
+		 		{
+		 			if(board[piece_y-2][piece_x-2] == ' ') return true;
+		 		}
+		 		else if(board[piece_y-1][piece_x+1] == 'B' || board[piece_y-1][piece_x+1] == 'b')
+		 		{
+		 			if(board[piece_y-2][piece_x+2] == ' ') return true;
+		 		}
+		 		break;
+		 	case 'B':
+		 		if(board[piece_y+1][piece_x-1] == 'W' || board[piece_y+1][piece_x-1] == 'w')
+		 		{
+		 			if(board[piece_y+2][piece_x-2] == ' ') return true;
+		 		}
+		 		else if(board[piece_y+1][piece_x+1] == 'W' || board[piece_y+1][piece_x+1] == 'w')
+		 		{
+		 			if(board[piece_y+2][piece_x+2] == ' ') return true;
+		 		}
+		 		break;
+		 	case 'w':
+		 		if(board[piece_y-1][piece_x-1] == 'B' || board[piece_y-1][piece_x-1] == 'b')
+		 		{
+		 			if(board[piece_y-2][piece_x-2] == ' ') return true;
+		 		}
+		 		else if(board[piece_y-1][piece_x+1] == 'B' || board[piece_y-1][piece_x+1] == 'b')
+		 		{
+		 			if(board[piece_y-2][piece_x+2] == ' ') return true;
+		 		}
+		 		if(board[piece_y+1][piece_x-1] == 'B' || board[piece_y+1][piece_x-1] == 'b')
+		 		{
+		 			if(board[piece_y+2][piece_x-2] == ' ') return true;
+		 		}
+		 		else if(board[piece_y+1][piece_x+1] == 'B' || board[piece_y+1][piece_x+1] == 'b')
+		 		{
+		 			if(board[piece_y+2][piece_x+2] == ' ') return true;
+		 		}
+		 		break;
+		 	case 'b':
+		 		if(board[piece_y-1][piece_x-1] == 'W' || board[piece_y-1][piece_x-1] == 'w')
+		 		{
+		 			if(board[piece_y-2][piece_x-2] == ' ') return true;
+		 		}
+		 		else if(board[piece_y-1][piece_x+1] == 'W' || board[piece_y-1][piece_x+1] == 'w')
+		 		{
+		 			if(board[piece_y-2][piece_x+2] == ' ') return true;
+		 		}
+		 		if(board[piece_y+1][piece_x-1] == 'W' || board[piece_y+1][piece_x-1] == 'w')
+		 		{
+		 			if(board[piece_y+2][piece_x-2] == ' ') return true;
+		 		}
+		 		else if(board[piece_y+1][piece_x+1] == 'W' || board[piece_y+1][piece_x+1] == 'w')
+		 		{
+		 			if(board[piece_y+2][piece_x+2] == ' ') return true;
+		 		}
+		 		break;
+		 	default:
+		 		return false;
+		}
+		
+		return false;
+	}
+	
 	// Valid move check
-	public static String checkMove(char[][] board_to_check, String curr_pos, String des_pos)
+ 	public static String checkMove(char[][] board_to_check, String curr_pos, String des_pos)
 	{
 		String res="";
 		
@@ -58,6 +131,8 @@ public class Server {
 		
 		int des_pos_x = convertPositions(des_pos)[0];
 		int des_pos_y = convertPositions(des_pos)[1];
+		
+		Boolean valid = false;
 		
 		
 		// Board limits check
@@ -90,6 +165,7 @@ public class Server {
 										board_to_check[des_pos_y][des_pos_x] = 'W';
 									}
 									
+									valid = true;
 									res += boardToString(board_to_check);
 									res += "\r\nVALID";
 
@@ -115,6 +191,7 @@ public class Server {
 											board_to_check[des_pos_y][des_pos_x] = 'W';
 										}
 										
+										valid = true;
 										res += boardToString(board_to_check);
 										res += "\r\nVALID";
 									}
@@ -137,6 +214,7 @@ public class Server {
 											board_to_check[des_pos_y][des_pos_x] = 'W';
 										}
 										
+										valid = true;
 										res += boardToString(board_to_check);
 										res += "\r\nVALID";
 									}
@@ -164,6 +242,7 @@ public class Server {
 										board_to_check[des_pos_y][des_pos_x] = 'B';
 									}
 									
+									valid = true;
 									res += boardToString(board_to_check);
 									res += "\r\nVALID";
 								}
@@ -188,6 +267,7 @@ public class Server {
 											board_to_check[des_pos_y][des_pos_x] = 'B';
 										}
 										
+										valid = true;
 										res += boardToString(board_to_check);
 										res += "\r\nVALID";
 									}
@@ -210,7 +290,7 @@ public class Server {
 											board_to_check[des_pos_y][des_pos_x] = 'B';
 										}
 										
-										
+										valid = true;
 										res += boardToString(board_to_check);
 										res += "\r\nVALID";
 									}
@@ -228,6 +308,7 @@ public class Server {
 									board_to_check[curr_pos_y][curr_pos_x] = ' ';
 									board_to_check[des_pos_y][des_pos_x] = 'w';
 									
+									valid = true;
 									res += boardToString(board_to_check);
 									res += "\r\nVALID";
 								}
@@ -240,6 +321,7 @@ public class Server {
 									board_to_check[curr_pos_y][curr_pos_x] = ' ';
 									board_to_check[des_pos_y][des_pos_x] = 'w';
 									
+									valid = true;
 									res += boardToString(board_to_check);
 									res += "\r\nVALID";
 								}
@@ -255,6 +337,7 @@ public class Server {
 										board_to_check[des_pos_y][des_pos_x] = 'w';
 										board_to_check[curr_pos_y-1][curr_pos_x-1] = ' ';
 										
+										valid = true;
 										res += boardToString(board_to_check);
 										res += "\r\nVALID";
 									}
@@ -267,6 +350,7 @@ public class Server {
 										board_to_check[des_pos_y][des_pos_x] = 'w';
 										board_to_check[curr_pos_y-1][curr_pos_x+1] = ' ';
 										
+										valid = true;
 										res += boardToString(board_to_check);
 										res += "\r\nVALID";
 									}
@@ -282,6 +366,7 @@ public class Server {
 										board_to_check[des_pos_y][des_pos_x] = 'w';
 										board_to_check[curr_pos_y+1][curr_pos_x-1] = ' ';
 										
+										valid = true;
 										res += boardToString(board_to_check);
 										res += "\r\nVALID";
 									}
@@ -294,6 +379,7 @@ public class Server {
 										board_to_check[des_pos_y][des_pos_x] = 'w';
 										board_to_check[curr_pos_y+1][curr_pos_x+1] = ' ';
 										
+										valid = true;
 										res += boardToString(board_to_check);
 										res += "\r\nVALID";
 									}
@@ -312,6 +398,7 @@ public class Server {
 									board_to_check[curr_pos_y][curr_pos_x] = ' ';
 									board_to_check[des_pos_y][des_pos_x] = 'b';
 									
+									valid = true;
 									res += boardToString(board_to_check);
 									res += "\r\nVALID";
 								}
@@ -324,6 +411,7 @@ public class Server {
 									board_to_check[curr_pos_y][curr_pos_x] = ' ';
 									board_to_check[des_pos_y][des_pos_x] = 'b';
 									
+									valid = true;
 									res += boardToString(board_to_check);
 									res += "\r\nVALID";
 								}
@@ -339,6 +427,7 @@ public class Server {
 										board_to_check[des_pos_y][des_pos_x] = 'b';
 										board_to_check[curr_pos_y-1][curr_pos_x-1] = ' ';
 										
+										valid = true;
 										res += boardToString(board_to_check);
 										res += "\r\nVALID";
 									}
@@ -351,6 +440,7 @@ public class Server {
 										board_to_check[des_pos_y][des_pos_x] = 'b';
 										board_to_check[curr_pos_y-1][curr_pos_x+1] = ' ';
 										
+										valid = true;
 										res += boardToString(board_to_check);
 										res += "\r\nVALID";
 									}
@@ -366,6 +456,7 @@ public class Server {
 										board_to_check[des_pos_y][des_pos_x] = 'b';
 										board_to_check[curr_pos_y+1][curr_pos_x-1] = ' ';
 										
+										valid = true;
 										res += boardToString(board_to_check);
 										res += "\r\nVALID";
 									}
@@ -378,6 +469,7 @@ public class Server {
 										board_to_check[des_pos_y][des_pos_x] = 'b';
 										board_to_check[curr_pos_y+1][curr_pos_x+1] = ' ';
 										
+										valid = true;
 										res += boardToString(board_to_check);
 										res += "\r\nVALID";
 									}
@@ -400,15 +492,27 @@ public class Server {
 			res += "\r\nINVALID";
 		}
 		
+		// Check if second Eating move can be performed 
+		// Add next player accordingly
+		// W or B
+		if(valid)
+		{
+			if(checkEatingMove(board_to_check, des_pos))
+			{
+				res += "\r\nDUB JUMP";
+			}
+		}
+		
 		return res;
 		
 	}
 
 	public static void main(String[] args)
-	{	String initial_test_board = boardToString(test_board);
+	{	
+		String initial_test_board = boardToString(test_board);
 		System.out.println(initial_test_board+"\r\n");
 		
-		String test = checkMove(test_board, "1 4", "2 5");
+		String test = checkMove(test_board, "6 5", "4 3");
 		
 		System.out.print(test);
 	}
