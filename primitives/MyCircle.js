@@ -28,7 +28,7 @@ MyCircle.prototype.initBuffers = function() {
  	var angle = (360/this.slices) * degToRad;
 
  	for(var i=0;i<this.slices;i++) {
- 		this.vertices.push(Math.cos(i*angle), Math.sin(i*angle), 0);
+ 		this.vertices.push(Math.cos(i*angle)/2, Math.sin(i*angle)/2, 0);
  		this.normals.push(0, 0, 1);
  	}
 

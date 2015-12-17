@@ -12,10 +12,10 @@ dir_resources='../resources/';
 dir_shaders='../shaders/';
 
 files_lib=[dir_lib+'CGF.js'];
-files_gui=[dir_gui+'Scene.js'];
+files_gui=[dir_gui+'Scene.js', dir_gui+'MyInterface.js',];
 files_connection=[];
 files_logic=[];
-files_models=[];
+files_models=[dir_models+'Piece.js', dir_models+'Board.js'];
 files_primitives=[dir_primitives+'MyRectangle.js', dir_primitives+'MyCylinder.js', dir_primitives+'MyTriangle.js', dir_primitives+'MySemiSphere.js', dir_primitives+'MySphere.js', dir_primitives+'MyPatch.js', dir_primitives+'MyPlane.js', dir_primitives+'MyTerrain.js', dir_primitives+'MyCircle.js'];
 files_resources=[];
 files_shaders=[];
@@ -28,13 +28,15 @@ files_res=files_res.concat(files_primitives);
 files_res=files_res.concat(files_resources);
 files_res=files_res.concat(files_shaders);
 
+//port =;
+
 serialInclude(files_res.concat([
 main=function()
 {
-	// Standard application, scene and interface setup
+    // Standard application, scene and interface setup
     var app = new CGFapplication(document.body);
     var myScene = new Scene();
-    myInterface = new CGFinterface();
+    myInterface = new MyInterface();
 
     app.init();
 
@@ -42,8 +44,8 @@ main=function()
     app.setInterface(myInterface);
 
     myInterface.setActiveCamera(myScene.camera);
-	
-	// start
+    
+    // start
     app.run();
 }
 
