@@ -4,7 +4,6 @@ var updatePeriod = 50;
 function Scene() {
     
     CGFscene.call(this);
-
 };
 
 Scene.prototype = Object.create(CGFscene.prototype);
@@ -38,7 +37,7 @@ Scene.prototype.init = function (application) {
     this.setUpdatePeriod(updatePeriod);
 
     //skins
-    this.alt_skin=false;
+    this.skin=1;
 
     //board state
     this.board_state =  [
@@ -58,12 +57,16 @@ Scene.prototype.init = function (application) {
 
     this.piece = new Piece(this,5,100);
 
-    this.board = new Board(this,this.matWOOD,this.matWHITE,this.matBLACK);
+    var matBoardBLACK = new CGFappearance(this);
+    matBoardBLACK.setAmbient(0.05, 0.05, 0.05, 1.0);
+    matBoardBLACK.setDiffuse(0.05, 0.05, 0.05, 1.0);
+    matBoardBLACK.setSpecular(0.02, 0.02, 0.02, 1.0);
+    matBoardBLACK.setShininess(2.0);
+    this.board = new Board(this,this.matWOOD,this.matWHITE,matBoardBLACK);
 
     //picking
 
     this.setPickEnabled(true);
-
 };
 
 Scene.prototype.initLights = function () {
@@ -100,8 +103,8 @@ Scene.prototype.updateLights = function() {
 
 Scene.prototype.initCameras = function () {
     
-    this.camera = new CGFcamera(0.4, 0.01, 500, vec3.fromValues(0, 10, 20), vec3.fromValues(0, 0, 0));
-    this.cameraDestination = [0,10,20];
+    this.camera = new CGFcamera(0.4, 0.01, 500, vec3.fromValues(20, 10, 0), vec3.fromValues(0, 0, 0));
+    this.cameraDestination = [20,10,0];
     this.cameraTransition = false;
     this.transitionTime = 2000;
 };
@@ -112,12 +115,12 @@ Scene.prototype.initMaterials = function () {
     this.matSILVER.setAmbient(0.2, 0.2, 0.2, 1.0);
     this.matSILVER.setDiffuse(0.2, 0.2, 0.2, 1.0);
     this.matSILVER.setSpecular(0.2, 0.2, 0.2, 1.0);
-    this.matSILVER.setShininess(5.0);
+    this.matSILVER.setShininess(10.0);
 
     this.matGOLD = new CGFappearance(this);
     this.matGOLD.setAmbient(0.5, 0.42, 0.05, 1.0);
     this.matGOLD.setDiffuse(0.5, 0.42, 0.05, 1.0);
-    this.matGOLD.setSpecular(0.3, 0.3, 0.3, 1.0);
+    this.matGOLD.setSpecular(0.6, 0.2, 0.2, 1.0);
     this.matGOLD.setShininess(10.0);
 
     this.matBLACK = new CGFappearance(this);
@@ -136,7 +139,13 @@ Scene.prototype.initMaterials = function () {
     this.matWOOD.setAmbient(0.59, 0.44, 0.2, 1);
     this.matWOOD.setDiffuse(0.59, 0.44, 0.2, 1);
     this.matWOOD.setSpecular(0.15, 0.11, 0.05, 1);
-    this.matWOOD.setShininess(10);
+    this.matWOOD.setShininess(10.0);
+
+    this.matWOODDARK = new CGFappearance(this);
+    this.matWOODDARK.setAmbient(0.09, 0.02, 0.01, 1);
+    this.matWOODDARK.setDiffuse(0.09, 0.02, 0.01, 1);
+    this.matWOODDARK.setSpecular(0.1, 0.02, 0.02, 1);
+    this.matWOODDARK.setShininess(2.0);
 };
 
 Scene.prototype.display = function () {
@@ -169,29 +178,27 @@ Scene.prototype.display = function () {
 Scene.prototype.displayBoardState = function () {
     
     this.pushMatrix();
-        this.rotate(-90*degToRad,0,1,0);
-        this.translate(-(1.30*9)/2,0,-(1.30*9)/2);
-        for (var i = 0; i < this.board_state.length; i++) {
-            for (var j = 0; j < this.board_state[i].length; j++) {
+        for (var i = 1; i < 9; i++) {
+            for (var j = 1; j < 9; j++) {
                 if(this.board_state[i][j]=='B'||this.board_state[i][j]=='W' || this.board_state[i][j]=='b' || this.board_state[i][j]=='w')
                 {
                     if(this.board_state[i][j]=='B' || this.board_state[i][j]=='b')
                     {
-                        if(this.alt_skin)
-                            this.matSILVER.apply();
-                        else
+                        if(this.skin==1)
                             this.matBLACK.apply();
+                        else
+                            this.matSILVER.apply();
                     }
                     else if(this.board_state[i][j]=='W' || this.board_state[i][j]=='w')
                     {
-                        if(this.alt_skin)
-                            this.matGOLD.apply();
-                        else
+                        if(this.skin==1)
                             this.matWHITE.apply();
+                        else
+                            this.matGOLD.apply();
                     }
 
                     this.pushMatrix();
-                        this.translate(i*1.30,0,j*1.30);
+                        this.translate(i*1.30-(1.30*9)/2,0,(1.30*9)/2-j*1.30);
                         this.piece.display();
                     this.popMatrix();
                     if(this.board_state[i][j]=='b' || this.board_state[i][j]=='w')
@@ -238,7 +245,7 @@ Scene.prototype.cameraTopWhite = function() {
 
     if(!this.cameraTransition) {
         this.cameraOrigin=[this.camera.position[0], this.camera.position[1], this.camera.position[2]];
-        this.cameraDestination = [0,27.5,0.01];
+        this.cameraDestination = [0.01,27.5,0];
         if(!arraysEqual(this.cameraDestination, this.cameraOrigin)) this.calcTransition();
     }
 }
@@ -247,7 +254,7 @@ Scene.prototype.cameraTopBlack = function() {
 
     if(!this.cameraTransition) {
         this.cameraOrigin=[this.camera.position[0], this.camera.position[1], this.camera.position[2]];
-        this.cameraDestination = [0,27.5,-0.01];
+        this.cameraDestination = [-0.01,27.5,0];
         if(!arraysEqual(this.cameraDestination, this.cameraOrigin)) this.calcTransition();
     }
 }
@@ -256,7 +263,7 @@ Scene.prototype.cameraWhite = function() {
 
     if(!this.cameraTransition) {
         this.cameraOrigin=[this.camera.position[0], this.camera.position[1], this.camera.position[2]];
-        this.cameraDestination = [0,10,20];
+        this.cameraDestination = [20,10,0];
         if(!arraysEqual(this.cameraDestination, this.cameraOrigin)) this.calcTransition();
     }
 }
@@ -265,7 +272,7 @@ Scene.prototype.cameraBlack = function() {
 
     if(!this.cameraTransition) {
         this.cameraOrigin=[this.camera.position[0], this.camera.position[1], this.camera.position[2]];
-        this.cameraDestination = [0,10,-20];
+        this.cameraDestination = [-20,10,0];
         if(!arraysEqual(this.cameraDestination, this.cameraOrigin)) this.calcTransition();
     }
 }
@@ -278,8 +285,7 @@ Scene.prototype.calcTransition = function() {
     this.cameraTransition = true;
 }
 
-Scene.prototype.logPicking = function ()
-{
+Scene.prototype.logPicking = function () {
     if (this.pickMode == false) {
         if (this.pickResults != null && this.pickResults.length > 0) {
             for (var i=0; i< this.pickResults.length; i++) {
@@ -292,6 +298,19 @@ Scene.prototype.logPicking = function ()
             }
             this.pickResults.splice(0,this.pickResults.length);
         }       
+    }
+}
+
+Scene.prototype.alt_skin = function () {
+    if(this.skin==1)
+    {
+        this.skin=2;
+        this.board.setMatWOOD(this.matWOODDARK);
+    }
+    else
+    {
+        this.skin=1;
+        this.board.setMatWOOD(this.matWOOD);
     }
 }
 
