@@ -38,7 +38,7 @@ Scene.prototype.init = function (application) {
     this.setUpdatePeriod(updatePeriod);
 
     //skins
-    this.skin=1;
+    this.alt_skin=false;
 
     //board state
     this.board_state =  [
@@ -59,6 +59,11 @@ Scene.prototype.init = function (application) {
     this.piece = new Piece(this,5,100);
 
     this.board = new Board(this,this.matWOOD,this.matWHITE,this.matBLACK);
+
+    //picking
+
+    this.setPickEnabled(true);
+
 };
 
 Scene.prototype.initLights = function () {
@@ -135,6 +140,9 @@ Scene.prototype.initMaterials = function () {
 };
 
 Scene.prototype.display = function () {
+    this.logPicking();
+    this.clearPickRegistration();
+
 	// ---- BEGIN Background, camera and axis setup
     	
 	// Clear image and depth buffer everytime we update the scene
@@ -169,17 +177,17 @@ Scene.prototype.displayBoardState = function () {
                 {
                     if(this.board_state[i][j]=='B' || this.board_state[i][j]=='b')
                     {
-                        if(this.skin==1)
-                            this.matBLACK.apply();
-                        else if(this.skin==2)
+                        if(this.alt_skin)
                             this.matSILVER.apply();
+                        else
+                            this.matBLACK.apply();
                     }
                     else if(this.board_state[i][j]=='W' || this.board_state[i][j]=='w')
                     {
-                        if(this.skin==1)
-                            this.matWHITE.apply();
-                        else if(this.skin==2)
+                        if(this.alt_skin)
                             this.matGOLD.apply();
+                        else
+                            this.matWHITE.apply();
                     }
 
                     this.pushMatrix();
@@ -268,6 +276,23 @@ Scene.prototype.calcTransition = function() {
             this.cameraDestination[2]-this.cameraOrigin[2]];
 
     this.cameraTransition = true;
+}
+
+Scene.prototype.logPicking = function ()
+{
+    if (this.pickMode == false) {
+        if (this.pickResults != null && this.pickResults.length > 0) {
+            for (var i=0; i< this.pickResults.length; i++) {
+                var obj = this.pickResults[i][0];
+                if (obj)
+                {
+                    var customId = this.pickResults[i][1];              
+                    console.log("Picked object: " + obj + ", with pick id " + customId);
+                }
+            }
+            this.pickResults.splice(0,this.pickResults.length);
+        }       
+    }
 }
 
 function arraysEqual(a, b) {
