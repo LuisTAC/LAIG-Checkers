@@ -2,7 +2,7 @@
  * Piece
  * @constructor
  */
-function Piece(scene, stacks, slices) {
+function Piece(scene, stacks, slices, posX, posY, chr) {
  	CGFobject.call(this,scene);
 	
 	this.stacks = stacks;
@@ -11,6 +11,9 @@ function Piece(scene, stacks, slices) {
 
 	this.circle = new MyCircle(scene, slices);
 	this.cylinder = new MyCylinder(scene,0.5,0.5,0.5,stacks,slices);
+	this.posX = posX;
+	this.posY = posY;
+	this.chr = chr;
 };
 
 Piece.prototype = Object.create(CGFobject.prototype);

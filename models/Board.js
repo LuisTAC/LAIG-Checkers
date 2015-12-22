@@ -168,7 +168,6 @@ Board.prototype.display = function () {
  		this.matWOOD.apply();
  		this.corner.display();
  	this.scene.popMatrix();
- 	/**/
 };
 
 Board.prototype.setMatWOOD = function (mat) {

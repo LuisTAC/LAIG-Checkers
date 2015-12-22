@@ -39,23 +39,36 @@ Scene.prototype.init = function (application) {
     //skins
     this.skin=1;
 
-    //board state
-    this.board_state =  [
-    ['#','#','#','#','#','#','#','#','#','#'],
-    ['#',' ','B',' ','B',' ','B',' ','B','#'],
-    ['#','B',' ','B',' ','B',' ','B',' ','#'],
-    ['#',' ','B',' ','B',' ','B',' ','B','#'],
-    ['#',' ',' ',' ',' ',' ',' ',' ',' ','#'],
-    ['#',' ',' ',' ',' ',' ',' ',' ',' ','#'],
-    ['#','W',' ','W',' ','W',' ','W',' ','#'],
-    ['#',' ','W',' ','W',' ','W',' ','W','#'],
-    ['#','W',' ','W',' ','W',' ','W',' ','#'],
-    ['#','#','#','#','#','#','#','#','#','#']
-    ];
-
     //models
 
-    this.piece = new Piece(this,5,100);
+    this.pieces = [];
+    //B
+    this.pieces.push(new Piece(this, 5, 100, 2, 1, 'B'));
+    this.pieces.push(new Piece(this, 5, 100, 4, 1, 'B'));
+    this.pieces.push(new Piece(this, 5, 100, 6, 1, 'B'));
+    this.pieces.push(new Piece(this, 5, 100, 8, 1, 'B'));
+    this.pieces.push(new Piece(this, 5, 100, 1, 2, 'B'));
+    this.pieces.push(new Piece(this, 5, 100, 3, 2, 'B'));
+    this.pieces.push(new Piece(this, 5, 100, 5, 2, 'B'));
+    this.pieces.push(new Piece(this, 5, 100, 7, 2, 'B'));
+    this.pieces.push(new Piece(this, 5, 100, 2, 3, 'B'));
+    this.pieces.push(new Piece(this, 5, 100, 4, 3, 'B'));
+    this.pieces.push(new Piece(this, 5, 100, 6, 3, 'B'));
+    this.pieces.push(new Piece(this, 5, 100, 8, 3, 'B'));
+    //W
+    //B
+    this.pieces.push(new Piece(this, 5, 100, 1, 8, 'W'));
+    this.pieces.push(new Piece(this, 5, 100, 3, 8, 'W'));
+    this.pieces.push(new Piece(this, 5, 100, 5, 8, 'W'));
+    this.pieces.push(new Piece(this, 5, 100, 7, 8, 'W'));
+    this.pieces.push(new Piece(this, 5, 100, 2, 7, 'W'));
+    this.pieces.push(new Piece(this, 5, 100, 4, 7, 'W'));
+    this.pieces.push(new Piece(this, 5, 100, 6, 7, 'W'));
+    this.pieces.push(new Piece(this, 5, 100, 8, 7, 'W'));
+    this.pieces.push(new Piece(this, 5, 100, 1, 6, 'W'));
+    this.pieces.push(new Piece(this, 5, 100, 3, 6, 'W'));
+    this.pieces.push(new Piece(this, 5, 100, 5, 6, 'W'));
+    this.pieces.push(new Piece(this, 5, 100, 7, 6, 'W'));
 
     var matBoardBLACK = new CGFappearance(this);
     matBoardBLACK.setAmbient(0.05, 0.05, 0.05, 1.0);
@@ -65,7 +78,6 @@ Scene.prototype.init = function (application) {
     this.board = new Board(this,this.matWOOD,this.matWHITE,matBoardBLACK);
 
     //picking
-
     this.setPickEnabled(true);
 };
 
@@ -120,8 +132,8 @@ Scene.prototype.initMaterials = function () {
     this.matGOLD = new CGFappearance(this);
     this.matGOLD.setAmbient(0.5, 0.42, 0.05, 1.0);
     this.matGOLD.setDiffuse(0.5, 0.42, 0.05, 1.0);
-    this.matGOLD.setSpecular(0.6, 0.2, 0.2, 1.0);
-    this.matGOLD.setShininess(10.0);
+    this.matGOLD.setSpecular(0.8, 0.2, 0.2, 1.0);
+    this.matGOLD.setShininess(2.0);
 
     this.matBLACK = new CGFappearance(this);
     this.matBLACK.setAmbient(0.07, 0.07, 0.07, 1.0);
@@ -171,46 +183,62 @@ Scene.prototype.display = function () {
 
     this.updateLights();
 
-    this.displayBoardState();
-    this.board.display();
+    this.board.display();    
+    this.displayPieces();
 };
 
-Scene.prototype.displayBoardState = function () {
+Scene.prototype.buildState = function () {
+    var res = [
+    ['#','#','#','#','#','#','#','#','#','#'],
+    ['#',' ',' ',' ',' ',' ',' ',' ',' ','#'],
+    ['#',' ',' ',' ',' ',' ',' ',' ',' ','#'],
+    ['#',' ',' ',' ',' ',' ',' ',' ',' ','#'],
+    ['#',' ',' ',' ',' ',' ',' ',' ',' ','#'],
+    ['#',' ',' ',' ',' ',' ',' ',' ',' ','#'],
+    ['#',' ',' ',' ',' ',' ',' ',' ',' ','#'],
+    ['#',' ',' ',' ',' ',' ',' ',' ',' ','#'],
+    ['#',' ',' ',' ',' ',' ',' ',' ',' ','#'],
+    ['#','#','#','#','#','#','#','#','#','#']
+    ];
+
+    for(var i=0;i<this.pieces.length;i++) {
+        res[this.pieces[i].posY][this.pieces[i].posX] = this.pieces[i].chr;
+    }
+    return res;
+}
+
+Scene.prototype.displayPieces = function () {
     
     this.pushMatrix();
-        for (var i = 1; i < 9; i++) {
-            for (var j = 1; j < 9; j++) {
-                if(this.board_state[i][j]=='B'||this.board_state[i][j]=='W' || this.board_state[i][j]=='b' || this.board_state[i][j]=='w')
-                {
-                    if(this.board_state[i][j]=='B' || this.board_state[i][j]=='b')
-                    {
-                        if(this.skin==1)
-                            this.matBLACK.apply();
-                        else
-                            this.matSILVER.apply();
-                    }
-                    else if(this.board_state[i][j]=='W' || this.board_state[i][j]=='w')
-                    {
-                        if(this.skin==1)
-                            this.matWHITE.apply();
-                        else
-                            this.matGOLD.apply();
-                    }
+        for (var i = 0; i < this.pieces.length; i++) {
+            if(this.pieces[i].chr=='B' || this.pieces[i].chr=='b')
+            {
+                if(this.skin==1)
+                    this.matBLACK.apply();
+                else
+                    this.matSILVER.apply();
+            }
+            else if(this.pieces[i].chr=='W' || this.pieces[i].chr=='w')
+            {
+                if(this.skin==1)
+                    this.matWHITE.apply();
+                else
+                    this.matGOLD.apply();
+            }
 
-                    this.pushMatrix();
-                        this.translate(i*1.30-(1.30*9)/2,0,(1.30*9)/2-j*1.30);
-                        this.piece.display();
-                    this.popMatrix();
-                    if(this.board_state[i][j]=='b' || this.board_state[i][j]=='w')
-                    {
-                        this.pushMatrix();
-                            this.translate(i*1.30,0.5,j*1.30);
-                            this.piece.display();
-                        this.popMatrix();
-                    }
-                }
-            };
-        };
+            this.registerForPick(65+i, this.pieces[i]);
+            this.pushMatrix();
+                this.translate(this.pieces[i].posY*1.30-(1.30*9)/2,0,(1.30*9)/2-this.pieces[i].posX*1.30);
+                this.pieces[i].display();
+            this.popMatrix();
+            if(this.pieces[i].chr=='b' || this.pieces[i].chr=='w')
+            {
+                this.pushMatrix();
+                    this.translate(this.pieces[i].posY*1.30,0.5,this.pieces[i].posX*1.30);
+                    this.pieces[i].display();
+                this.popMatrix();
+            }
+        }
     this.popMatrix();
 };
 
@@ -294,6 +322,14 @@ Scene.prototype.logPicking = function () {
                 {
                     var customId = this.pickResults[i][1];              
                     console.log("Picked object: " + obj + ", with pick id " + customId);
+                    if(obj instanceof MyRectangle) //Cells
+                    {
+                        console.log("\tCell [" + (Math.floor((customId-1)/8)+1) + "," + ((customId-1)%8+1) + "] picked");
+                    }
+                    else if (obj instanceof Piece) //Pieces
+                    {
+                        console.log("\tPiece at [" + obj.posX + "," + obj.posY + "] picked");
+                    }
                 }
             }
             this.pickResults.splice(0,this.pickResults.length);
