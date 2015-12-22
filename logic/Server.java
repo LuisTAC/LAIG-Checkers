@@ -1,6 +1,24 @@
 package logic;
 
+import java.util.ArrayList;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.StringWriter;
+import java.net.InetAddress;
+import java.net.InetSocketAddress;
+import java.net.URI;
+
+import com.sun.net.httpserver.HttpExchange;
+import com.sun.net.httpserver.HttpHandler;
+import com.sun.net.httpserver.HttpServer;
+import com.sun.net.httpserver.Headers;
+
 public class Server {
+	
+	private static HttpServer server;
 	
 	public static char[][] test_board = 
 			{{'#','#','#','#','#','#','#','#','#','#'},
@@ -15,8 +33,21 @@ public class Server {
 			 {'#','#','#','#','#','#','#','#','#','#'}
 			};
 	
+	public static String test_request =
+		"##########\n#   B B B#\n#B B B B #\n# B   B B#\n#    B   #\n#     w  #\n#W W W W #\n# W   W W#\n#W W W W #\n##########\n1 1\n1 2";
+	
+	// Breaks request into pieces
+	public static String[] breaksRequest(String request)
+	{
+		String[] res={};
+		
+		res = request.split("\n");
+		
+		return res;
+	}
+	
 	// Position to Integer array
-	public static int[] convertPositions(String pos)
+ 	public static int[] convertPositions(String pos)
 	{
 		String[] split_pos = pos.split(" ");
 		int res[] = new int[2];
@@ -509,12 +540,91 @@ public class Server {
 
 	public static void main(String[] args)
 	{	
-		String initial_test_board = boardToString(test_board);
-		System.out.println(initial_test_board+"\r\n");
+		if(args.length < 2)
+		{
+			System.out.println("Usage: java Server <address> <port>");
+			return;
+		}
 		
-		String test = checkMove(test_board, "6 5", "4 3");
+		// Stores arguments from command on variables
+		int port = Integer.parseInt(args[1]);
 		
-		System.out.print(test);
+		try {
+			server =  HttpServer.create(new InetSocketAddress(InetAddress.getByName(args[0]),port), 0);
+			System.out.println("@Server:properly created server");
+		} catch (IOException e) {
+			System.out.println("@Server:error creating server: "+e);
+			e.printStackTrace();
+		}
+		
+	}
+	
+	public static class RequestHandler implements HttpHandler {
+		private HttpExchange request;
+		RequestHandler(HttpExchange request)
+		{
+			this.request = request;
+		}
+
+		@Override
+		public void handle(HttpExchange t) throws IOException {
+			// Call handling methods on received strings
+			// Extract request body to a String
+			// scanRequest(request)
+			// breaksRequest(request);
+		}
+		
+	}	
+	
+	private static String scanRequest(HttpExchange request)
+	{
+		String method = request.getRequestMethod();
+		String query = request.getRequestURI().getQuery();
+		String body = InStreamToString(request.getRequestBody());
+		
+		String answer = "";
+		
+		return answer;
+	}
+	
+	private static String InStreamToString(InputStream is) {
+		 
+		BufferedReader br = null;
+		StringBuilder sb = new StringBuilder();
+ 
+		String line;
+		try {
+ 
+			br = new BufferedReader(new InputStreamReader(is));
+			while ((line = br.readLine()) != null) {
+				sb.append(line);
+			}
+ 
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			if (br != null) {
+				try {
+					br.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+ 
+		return sb.toString();
+ 
 	}
 
 }
+
+
+
+
+
+
+
+
+
+
+
