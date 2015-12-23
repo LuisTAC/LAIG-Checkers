@@ -34,7 +34,7 @@ public class Server {
 			};
 	
 	public static String test_request =
-		"##########\n#   B B B#\n#B B B B #\n# B   B B#\n#    B   #\n#     w  #\n#W W W W #\n# W   W W#\n#W W W W #\n##########\n1 1\n1 2";
+		"##########\n#   B B B#\n#B B B B #\n# B   B B#\n#    B   #\n#     w  #\n#W W W W #\n# W   W W#\n#W W W W #\n##########";
 	
 	// Breaks request into pieces
 	public static String[] breaksRequest(String request)
@@ -60,6 +60,22 @@ public class Server {
 		return res;
 	}
 	
+ 	// String to Board
+ 	private static char[][] stringToBoard(String[] board)
+ 	{
+ 		char[][] res = new char[10][10];
+ 		
+ 		for(int i=0; i<board.length; i++)
+ 		{
+ 			for(int j=0; j<board[i].length(); j++)
+ 			{
+ 				res[i][j] = board[i].charAt(j);
+ 			}
+ 		}
+ 		
+ 		return res;
+ 	}
+ 	
 	// Converts char[][] to String
 	private static String boardToString(char[][] board)
 	{
@@ -547,42 +563,63 @@ public class Server {
 		}
 		
 		// Stores arguments from command on variables
-		int port = Integer.parseInt(args[1]);
+		int port = 8001;
 		
 		try {
-			server =  HttpServer.create(new InetSocketAddress(InetAddress.getByName(args[0]),port), 0);
+			server =  HttpServer.create(new InetSocketAddress(InetAddress.getByName("localhost"),port), 0);
 			System.out.println("@Server:properly created server");
 		} catch (IOException e) {
 			System.out.println("@Server:error creating server: "+e);
 			e.printStackTrace();
 		}
 		
+		server.createContext("/Logic", new RequestHandler());
+		server.setExecutor(null);
+        server.start();
 	}
 	
 	public static class RequestHandler implements HttpHandler {
-		private HttpExchange request;
-		RequestHandler(HttpExchange request)
-		{
-			this.request = request;
-		}
+
 
 		@Override
-		public void handle(HttpExchange t) throws IOException {
-			// Call handling methods on received strings
-			// Extract request body to a String
-			// scanRequest(request)
-			// breaksRequest(request);
-		}
-		
+		public void handle(HttpExchange request) throws IOException {
+			String response = scanRequest(request);
+			int code = 200;
+			
+			try {
+				request.sendResponseHeaders(code, response.length());
+				OutputStream os = request.getResponseBody();
+				os.write(response.getBytes());
+				os.close();
+			}catch (IOException e) {
+				e.printStackTrace();
+				System.out.print("@Server:error sending response\n");
+			}
+		}	
 	}	
 	
 	private static String scanRequest(HttpExchange request)
 	{
 		String method = request.getRequestMethod();
-		String query = request.getRequestURI().getQuery();
 		String body = InStreamToString(request.getRequestBody());
 		
 		String answer = "";
+		
+		if(method.equals("POST"))
+		{
+			String[] strReqBody = breaksRequest(body);
+			
+			String[] board_init = breaksRequest(strReqBody[0]);
+			String curr_pos = strReqBody[1];
+			String des_pos = strReqBody[2];
+			
+			// Handles request parts and it builds a proper response
+			char[][] board = stringToBoard(board_init);
+			
+			answer = checkMove(board, curr_pos, des_pos);
+			
+		}
+		
 		
 		return answer;
 	}
