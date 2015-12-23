@@ -13,6 +13,7 @@ function Piece(scene, stacks, slices, posX, posY, chr) {
 	this.cylinder = new MyCylinder(scene,0.5,0.5,0.5,stacks,slices);
 	this.posX = posX;
 	this.posY = posY;
+	this.height = 0;
 	this.chr = chr;
 };
 

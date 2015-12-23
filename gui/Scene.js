@@ -9,6 +9,8 @@ function Scene() {
 Scene.prototype = Object.create(CGFscene.prototype);
 Scene.prototype.constructor = Scene;
 
+//Init
+
 Scene.prototype.init = function (application) {
     
     CGFscene.prototype.init.call(this, application);
@@ -17,6 +19,7 @@ Scene.prototype.init = function (application) {
     this.initCameras();
     this.initLights();
     this.initMaterials();
+    this.initPicking();
 
     this.gl.clearColor(0.0, 0.0, 0.0, 1.0);
 
@@ -76,9 +79,6 @@ Scene.prototype.init = function (application) {
     matBoardBLACK.setSpecular(0.02, 0.02, 0.02, 1.0);
     matBoardBLACK.setShininess(2.0);
     this.board = new Board(this,this.matWOOD,this.matWHITE,matBoardBLACK);
-
-    //picking
-    this.setPickEnabled(true);
 };
 
 Scene.prototype.initLights = function () {
@@ -118,7 +118,7 @@ Scene.prototype.initCameras = function () {
     this.camera = new CGFcamera(0.4, 0.01, 500, vec3.fromValues(20, 10, 0), vec3.fromValues(0, 0, 0));
     this.cameraDestination = [20,10,0];
     this.cameraTransition = false;
-    this.transitionTime = 2000;
+    this.camTransTime = 2000;
 };
 
 Scene.prototype.initMaterials = function () {
@@ -159,6 +159,18 @@ Scene.prototype.initMaterials = function () {
     this.matWOODDARK.setSpecular(0.1, 0.02, 0.02, 1);
     this.matWOODDARK.setShininess(2.0);
 };
+
+Scene.prototype.initPicking = function () {
+    
+    this.setPickEnabled(true);
+    this.pickedCell = null;
+    this.pickedPiece = null;
+    this.pieceTransition = false;
+    this.pieceTransTime = 500;
+    this.pieceFinalHeight = 1;
+};
+
+//Display
 
 Scene.prototype.display = function () {
     this.logPicking();
@@ -228,13 +240,15 @@ Scene.prototype.displayPieces = function () {
 
             this.registerForPick(65+i, this.pieces[i]);
             this.pushMatrix();
+                if(this.pieces[i]===this.pickedPiece) this.translate(0,this.pickedPiece.height,0);
                 this.translate(this.pieces[i].posY*1.30-(1.30*9)/2,0,(1.30*9)/2-this.pieces[i].posX*1.30);
                 this.pieces[i].display();
             this.popMatrix();
             if(this.pieces[i].chr=='b' || this.pieces[i].chr=='w')
             {
                 this.pushMatrix();
-                    this.translate(this.pieces[i].posY*1.30,0.5,this.pieces[i].posX*1.30);
+                    if(this.pieces[i]===this.pickedPiece) this.translate(0,this.pickedPiece.height,0);
+                    this.translate(this.pieces[i].posY*1.30-(1.30*9)/2,0.5,(1.30*9)/2-this.pieces[i].posX*1.30);
                     this.pieces[i].display();
                 this.popMatrix();
             }
@@ -245,17 +259,17 @@ Scene.prototype.displayPieces = function () {
 Scene.prototype.update = function(currTime) {
 
     if(this.cameraTransition) {
-        if(!this.transitionBeg) this.transitionBeg = currTime;
+        if(!this.camTransBeg) this.camTransBeg = currTime;
         else
         {
-            var time_since_start = currTime - this.transitionBeg;
-            if(time_since_start>=this.transitionTime) {
+            var time_since_start = currTime - this.camTransBeg;
+            if(time_since_start>=this.camTransTime) {
                 this.camera.setPosition(this.cameraDestination);
-                this.transitionBeg=null;
+                this.camTransBeg=null;
                 this.cameraTransition=false;
             }
             else {
-                var time_perc = time_since_start / this.transitionTime;
+                var time_perc = time_since_start / this.camTransTime;
                 var new_pos = [this.cameraOrigin[0]+(this.transitionVec[0]*time_perc),
                 this.cameraOrigin[1]+(this.transitionVec[1]*time_perc),
                 this.cameraOrigin[2]+(this.transitionVec[2]*time_perc)];
@@ -263,11 +277,25 @@ Scene.prototype.update = function(currTime) {
             }
         }
     }
-    else
-    {
-
-    }
+    if(this.pieceTransition) {
+        if(!this.pieceTransBeg) this.pieceTransBeg = currTime;
+        else
+        {
+            var time_since_start = currTime-this.pieceTransBeg;
+            if(time_since_start >= this.pieceTransTime) {
+                this.pickedPiece.height = this.pieceFinalHeight;
+                this.pieceTransBeg = null;
+                this.pieceTransition = false;
+            }
+            else {
+                var time_perc = time_since_start/this.pieceTransTime;
+                this.pickedPiece.height = this.pieceFinalHeight*time_perc;
+            }
+        }
+    }    
 };
+
+//Cameras
 
 Scene.prototype.cameraTopWhite = function() {
 
@@ -276,7 +304,7 @@ Scene.prototype.cameraTopWhite = function() {
         this.cameraDestination = [0.01,27.5,0];
         if(!arraysEqual(this.cameraDestination, this.cameraOrigin)) this.calcTransition();
     }
-}
+};
 
 Scene.prototype.cameraTopBlack = function() {
 
@@ -285,7 +313,7 @@ Scene.prototype.cameraTopBlack = function() {
         this.cameraDestination = [-0.01,27.5,0];
         if(!arraysEqual(this.cameraDestination, this.cameraOrigin)) this.calcTransition();
     }
-}
+};
 
 Scene.prototype.cameraWhite = function() {
 
@@ -294,7 +322,7 @@ Scene.prototype.cameraWhite = function() {
         this.cameraDestination = [20,10,0];
         if(!arraysEqual(this.cameraDestination, this.cameraOrigin)) this.calcTransition();
     }
-}
+};
 
 Scene.prototype.cameraBlack = function() {
 
@@ -303,7 +331,7 @@ Scene.prototype.cameraBlack = function() {
         this.cameraDestination = [-20,10,0];
         if(!arraysEqual(this.cameraDestination, this.cameraOrigin)) this.calcTransition();
     }
-}
+};
 
 Scene.prototype.calcTransition = function() {
     this.transitionVec = [this.cameraDestination[0]-this.cameraOrigin[0],
@@ -311,7 +339,9 @@ Scene.prototype.calcTransition = function() {
             this.cameraDestination[2]-this.cameraOrigin[2]];
 
     this.cameraTransition = true;
-}
+};
+
+//Picking
 
 Scene.prototype.logPicking = function () {
     if (this.pickMode == false) {
@@ -324,18 +354,25 @@ Scene.prototype.logPicking = function () {
                     console.log("Picked object: " + obj + ", with pick id " + customId);
                     if(obj instanceof MyRectangle) //Cells
                     {
-                        console.log("\tCell [" + (Math.floor((customId-1)/8)+1) + "," + ((customId-1)%8+1) + "] picked");
+                        console.log("\tCell [" + ((customId-1)%8+1) + "," + (Math.floor((customId-1)/8)+1) + "] picked"); //
+                        this.pickedCell=obj;
                     }
                     else if (obj instanceof Piece) //Pieces
                     {
                         console.log("\tPiece at [" + obj.posX + "," + obj.posY + "] picked");
+                        if(this.pickedPiece) this.pickedPiece.height=0;
+                        this.pickedPiece=obj;
+                        this.pieceTransition=true;
+                        this.pieceTransBeg=null;
                     }
                 }
             }
             this.pickResults.splice(0,this.pickResults.length);
         }       
     }
-}
+};
+
+//Skins
 
 Scene.prototype.alt_skin = function () {
     if(this.skin==1)
@@ -348,18 +385,17 @@ Scene.prototype.alt_skin = function () {
         this.skin=1;
         this.board.setMatWOOD(this.matWOOD);
     }
-}
+};
+
+//Utils
 
 function arraysEqual(a, b) {
   if (a === b) return true;
   if (a == null || b == null) return false;
   if (a.length != b.length) return false;
 
-  // If you don't care about the order of the elements inside
-  // the array, you should sort both arrays here.
-
   for (var i = 0; i < a.length; ++i) {
     if (a[i] !== b[i]) return false;
   }
   return true;
-}
+};
