@@ -394,7 +394,7 @@ Scene.prototype.alt_skin = function () {
 
 Scene.prototype.sendRequest = function (pos, des_pos) {
     var request = new XMLHttpRequest();
-    request.open('POST', 'http://localhost:8001/logic/', true);
+    request.open('POST', 'http://localhost:8001/', true);
 
     request.onload = this.handleReply;
     request.onerror = function(){console.log("Error waiting for response");};

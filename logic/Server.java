@@ -1,20 +1,16 @@
 package logic;
 
-import java.util.ArrayList;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
-import java.io.StringWriter;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
-import java.net.URI;
 
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
-import com.sun.net.httpserver.Headers;
 
 public class Server {
 	
@@ -555,13 +551,7 @@ public class Server {
 	}
 
 	public static void main(String[] args)
-	{	
-		if(args.length < 2)
-		{
-			System.out.println("Usage: java Server <address> <port>");
-			return;
-		}
-		
+	{			
 		// Stores arguments from command on variables
 		int port = 8001;
 		
@@ -573,7 +563,7 @@ public class Server {
 			e.printStackTrace();
 		}
 		
-		server.createContext("/Logic", new RequestHandler());
+		server.createContext("/", new RequestHandler());
 		server.setExecutor(null);
         server.start();
 	}
@@ -648,20 +638,6 @@ public class Server {
 				}
 			}
 		}
- 
 		return sb.toString();
- 
 	}
-
 }
-
-
-
-
-
-
-
-
-
-
-
