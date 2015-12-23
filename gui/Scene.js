@@ -79,6 +79,8 @@ Scene.prototype.init = function (application) {
     matBoardBLACK.setSpecular(0.02, 0.02, 0.02, 1.0);
     matBoardBLACK.setShininess(2.0);
     this.board = new Board(this,this.matWOOD,this.matWHITE,matBoardBLACK);
+
+    this.player = 'w';
 };
 
 Scene.prototype.initLights = function () {
@@ -352,18 +354,19 @@ Scene.prototype.logPicking = function () {
                 {
                     var customId = this.pickResults[i][1];              
                     console.log("Picked object: " + obj + ", with pick id " + customId);
-                    if(obj instanceof MyRectangle) //Cells
-                    {
-                        console.log("\tCell [" + ((customId-1)%8+1) + "," + (Math.floor((customId-1)/8)+1) + "] picked"); //
-                        this.pickedCell=obj;
-                    }
-                    else if (obj instanceof Piece) //Pieces
+                    if (obj instanceof Piece && obj.chr.toLowerCase() == this.player) //Pieces
                     {
                         console.log("\tPiece at [" + obj.posX + "," + obj.posY + "] picked");
                         if(this.pickedPiece) this.pickedPiece.height=0;
                         this.pickedPiece=obj;
                         this.pieceTransition=true;
                         this.pieceTransBeg=null;
+                    }
+                    if(this.pickedPiece && obj instanceof MyRectangle) //Cells
+                    {
+                        console.log("\tCell [" + ((customId-1)%8+1) + "," + (Math.floor((customId-1)/8)+1) + "] picked"); //
+                        this.pickedCell=obj;
+                        this.sendRequest([this.pickedPiece.posX, this.pickedPiece.posY], [((customId-1)%8+1), (Math.floor((customId-1)/8)+1)]);
                     }
                 }
             }
@@ -385,6 +388,37 @@ Scene.prototype.alt_skin = function () {
         this.skin=1;
         this.board.setMatWOOD(this.matWOOD);
     }
+};
+
+//Requests
+
+Scene.prototype.sendRequest = function (pos, des_pos) {
+    var request = new XMLHttpRequest();
+    request.open('POST', 'http://localhost:8001/logic/', true);
+
+    request.onload = this.handleReply;
+    request.onerror = function(){console.log("Error waiting for response");};
+
+    request.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8');
+    var str = this.buildState();
+    var body = "";
+    for (var i = 0; i < str.length; i++) {
+        for (var j = 0; j < str[i].length; j++) {
+            body+=str[i][j];
+        };
+        body+='\n';
+    };
+    body+= pos[0] + "," + pos[1] + "\n";
+    body+= des_pos[0] + "," + des_pos[1] + "\n";
+
+    request.send(body);
+};
+
+//Handle the Reply
+Scene.prototype.handleReply = function(data) {
+    
+    console.log("Request successful. Reply: " + data.target.response);
+    document.querySelector("#query_result").innerHTML=data.target.response;
 };
 
 //Utils
