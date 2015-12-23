@@ -29,10 +29,15 @@ MyInterface.prototype.init = function(application) {
 	// the identifier 'doSomething' must be a function declared as part of that object (i.e. a member of the scene class)
 	// e.g. LightingScene.prototype.doSomething = function () { console.log("Doing something..."); }; 
 
-	this.gui.add(this.scene, 'cameraTopWhite');
-	this.gui.add(this.scene, 'cameraTopBlack');
-	this.gui.add(this.scene, 'cameraWhite');
-	this.gui.add(this.scene, 'cameraBlack');
+	var cameras=this.gui.addFolder("Cameras");
+	//cameras.open();
+
+	cameras.add(this.scene, 'cameraTopWhite');
+	cameras.add(this.scene, 'cameraTopBlack');
+	cameras.add(this.scene, 'cameraWhite');
+	cameras.add(this.scene, 'cameraBlack');
+
+	this.gui.add(this.scene, 'alt_skin');
 
 	// add a group of controls (and open/expand by defult)
 	
