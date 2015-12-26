@@ -37,6 +37,8 @@ MyInterface.prototype.init = function(application) {
 	cameras.add(this.scene, 'cameraWhite');
 	cameras.add(this.scene, 'cameraBlack');
 
+	this.gui.add(this.scene, 'undo');
+
 	this.gui.add(this.scene, 'alt_skin');
 
 	// add a group of controls (and open/expand by defult)

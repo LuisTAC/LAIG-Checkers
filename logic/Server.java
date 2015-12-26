@@ -15,6 +15,16 @@ import com.sun.net.httpserver.HttpServer;
 public class Server {
 	
 	private static HttpServer server;
+	
+	// Checks player
+	public static char getPlayer(char[][] board, int x, int y)
+	{
+		char res = board[y][x];
+		
+		res = Character.toLowerCase(res);
+		
+		return res;
+	}
 
 	// Breaks request into pieces
 	public static String[] breaksRequest(String request)
@@ -90,7 +100,7 @@ public class Server {
 		 		{
 		 			if(board[piece_y-2][piece_x-2] == ' ') return true;
 		 		}
-		 		else if(board[piece_y-1][piece_x+1] == 'B' || board[piece_y-1][piece_x+1] == 'b')
+		 		if(board[piece_y-1][piece_x+1] == 'B' || board[piece_y-1][piece_x+1] == 'b')
 		 		{
 		 			if(board[piece_y-2][piece_x+2] == ' ') return true;
 		 		}
@@ -100,7 +110,7 @@ public class Server {
 		 		{
 		 			if(board[piece_y+2][piece_x-2] == ' ') return true;
 		 		}
-		 		else if(board[piece_y+1][piece_x+1] == 'W' || board[piece_y+1][piece_x+1] == 'w')
+		 		if(board[piece_y+1][piece_x+1] == 'W' || board[piece_y+1][piece_x+1] == 'w')
 		 		{
 		 			if(board[piece_y+2][piece_x+2] == ' ') return true;
 		 		}
@@ -110,7 +120,7 @@ public class Server {
 		 		{
 		 			if(board[piece_y-2][piece_x-2] == ' ') return true;
 		 		}
-		 		else if(board[piece_y-1][piece_x+1] == 'B' || board[piece_y-1][piece_x+1] == 'b')
+		 		if(board[piece_y-1][piece_x+1] == 'B' || board[piece_y-1][piece_x+1] == 'b')
 		 		{
 		 			if(board[piece_y-2][piece_x+2] == ' ') return true;
 		 		}
@@ -118,7 +128,7 @@ public class Server {
 		 		{
 		 			if(board[piece_y+2][piece_x-2] == ' ') return true;
 		 		}
-		 		else if(board[piece_y+1][piece_x+1] == 'B' || board[piece_y+1][piece_x+1] == 'b')
+		 		if(board[piece_y+1][piece_x+1] == 'B' || board[piece_y+1][piece_x+1] == 'b')
 		 		{
 		 			if(board[piece_y+2][piece_x+2] == ' ') return true;
 		 		}
@@ -128,7 +138,7 @@ public class Server {
 		 		{
 		 			if(board[piece_y-2][piece_x-2] == ' ') return true;
 		 		}
-		 		else if(board[piece_y-1][piece_x+1] == 'W' || board[piece_y-1][piece_x+1] == 'w')
+		 		if(board[piece_y-1][piece_x+1] == 'W' || board[piece_y-1][piece_x+1] == 'w')
 		 		{
 		 			if(board[piece_y-2][piece_x+2] == ' ') return true;
 		 		}
@@ -136,7 +146,7 @@ public class Server {
 		 		{
 		 			if(board[piece_y+2][piece_x-2] == ' ') return true;
 		 		}
-		 		else if(board[piece_y+1][piece_x+1] == 'W' || board[piece_y+1][piece_x+1] == 'w')
+		 		if(board[piece_y+1][piece_x+1] == 'W' || board[piece_y+1][piece_x+1] == 'w')
 		 		{
 		 			if(board[piece_y+2][piece_x+2] == ' ') return true;
 		 		}
@@ -159,6 +169,8 @@ public class Server {
 		
 		int des_pos_x = convertPositions(des_pos)[0];
 		int des_pos_y = convertPositions(des_pos)[1];
+		
+		char player = getPlayer(board_to_check, curr_pos_x, curr_pos_y);
 		
 		Boolean valid = false;
 		
@@ -535,8 +547,18 @@ public class Server {
 		// Check if second Eating move can be performed 
 		// Add next player accordingly
 		// W or B
-		if(valid && eating_move && checkEatingMove(board_to_check, des_pos))
-			res += "\nDUB JUMP";
+		if(!valid || (valid && eating_move && checkEatingMove(board_to_check, des_pos)))
+		{
+			res += "\n"+player;
+		}
+		else
+		{
+			if(player == 'b')
+			{
+				res += "\nw";
+			}
+			else res += "\nb";
+		}
 		
 		return res;
 	}
@@ -639,4 +661,5 @@ public class Server {
 		}
 		return sb.toString();
 	}
+
 }

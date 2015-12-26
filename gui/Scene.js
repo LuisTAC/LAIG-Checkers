@@ -44,6 +44,25 @@ Scene.prototype.init = function (application) {
 
     //models
 
+    //undo
+    var state = [
+    '##########',
+    '# B B B B#',
+    '#B B B B #',
+    '# B B B B#',
+    '#        #',
+    '#        #',
+    '#W W W W #',
+    '# W W W W#',
+    '#W W W W #',
+    '##########',
+    'VALID',
+    'w'];
+
+    this.states = [];
+    this.states.push(state);
+
+    //pieces
     this.pieces = [];
     //B
     this.pieces.push(new Piece(this, 5, 100, 2, 1, 'B'));
@@ -232,23 +251,23 @@ Scene.prototype.readState = function (state) {
             }
         };
     };
-    if(state[10]=="INVALID") console.log("invalid move!");
-    else if(state[10]=="VALID" && state.length==11)
+    if(this.pickedPiece) {
+        this.pickedPiece.height=0;
+        this.pickedPiece=null;
+    }    
+    if(state[10]=="INVALID")
     {
-        console.log("valid move (switch players)!");
-        if(this.player=='w') this.player='b';
-        else if(this.player=='b') this.player='w';
+        console.log("invalid move!");
+        return false;
     }
     else if(state[10]=="VALID")
     {
-        if(state.length>11)
-        {
-            if(state[11]=="DUB JUMP") console.log("valid move (dub jump available, don't switch players)!");
-        }
+        console.log("valid move!");
+        this.player=state[11];
+        return true;
     }
-    this.pickedPiece.height=0;
-    this.pickedPiece=null;
 };
+
 
 Scene.prototype.displayPieces = function () {
     
@@ -372,6 +391,18 @@ Scene.prototype.calcTransition = function() {
     this.cameraTransition = true;
 };
 
+//Undo
+Scene.prototype.undo = function() {
+    // Deletes state from states stack
+    if(this.states.length > 1)
+    {
+        this.states.pop();
+    }
+
+    var state = this.states[this.states.length-1];
+    this.readState(state);
+};
+
 //Picking
 
 Scene.prototype.logPicking = function () {
@@ -448,7 +479,10 @@ Scene.prototype.sendRequest = function (pos, des_pos) {
 Scene.prototype.handleReply = function(data) {
     
     var state = data.target.response.split("\n");
-    this.scene.readState(state);
+    if(this.scene.readState(state))
+    {
+        this.scene.states.push(state);
+    }
 };
 
 //Utils
