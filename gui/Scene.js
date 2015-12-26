@@ -246,6 +246,8 @@ Scene.prototype.readState = function (state) {
             if(state[11]=="DUB JUMP") console.log("valid move (dub jump available, don't switch players)!");
         }
     }
+    this.pickedPiece.height=0;
+    this.pickedPiece=null;
 };
 
 Scene.prototype.displayPieces = function () {
