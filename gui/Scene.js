@@ -168,7 +168,7 @@ Scene.prototype.initPicking = function () {
     this.pickedCell = null;
     this.pickedPiece = null;
     this.pieceTransition = false;
-    this.pieceTransTime = 500;
+    this.pieceTransTime = 200;
     this.pieceFinalHeight = 1;
 };
 
@@ -232,6 +232,20 @@ Scene.prototype.readState = function (state) {
             }
         };
     };
+    if(state[10]=="INVALID") console.log("invalid move!");
+    else if(state[10]=="VALID" && state.length==11)
+    {
+        console.log("valid move (switch players)!");
+        if(this.player=='w') this.player='b';
+        else if(this.player=='b') this.player='w';
+    }
+    else if(state[10]=="VALID")
+    {
+        if(state.length>11)
+        {
+            if(state[11]=="DUB JUMP") console.log("valid move (dub jump available, don't switch players)!");
+        }
+    }
 };
 
 Scene.prototype.displayPieces = function () {
