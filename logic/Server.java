@@ -15,23 +15,7 @@ import com.sun.net.httpserver.HttpServer;
 public class Server {
 	
 	private static HttpServer server;
-	
-	public static char[][] test_board = 
-			{{'#','#','#','#','#','#','#','#','#','#'},
-			 {'#',' ',' ',' ','B',' ','B',' ','B','#'},
-			 {'#','B',' ','B',' ','B',' ','B',' ','#'},
-			 {'#',' ','B',' ',' ',' ','B',' ','B','#'},
-			 {'#',' ',' ',' ',' ','B',' ',' ',' ','#'},
-			 {'#',' ',' ',' ',' ',' ','w',' ',' ','#'},
-			 {'#','W',' ','W',' ','W',' ','W',' ','#'},
-			 {'#',' ','W',' ',' ',' ','W',' ','W','#'},
-			 {'#','W',' ','W',' ','W',' ','W',' ','#'},
-			 {'#','#','#','#','#','#','#','#','#','#'}
-			};
-	
-	public static String test_request =
-		"##########\n#   B B B#\n#B B B B #\n# B   B B#\n#    B   #\n#     w  #\n#W W W W #\n# W   W W#\n#W W W W #\n##########";
-	
+
 	// Breaks request into pieces
 	public static String[] breaksRequest(String request)
 	{
@@ -80,7 +64,7 @@ public class Server {
 		{
 			if(i!=0)
 			{
-				res+="\r\n";
+				res+="\n";
 			}
 			for(int j=0; j<board[i].length; j++)
 			{
@@ -168,6 +152,7 @@ public class Server {
  	public static String checkMove(char[][] board_to_check, String curr_pos, String des_pos)
 	{
 		String res="";
+		Boolean eating_move = false;
 		
 		int curr_pos_x = convertPositions(curr_pos)[0];
 		int curr_pos_y = convertPositions(curr_pos)[1];
@@ -210,7 +195,7 @@ public class Server {
 									
 									valid = true;
 									res += boardToString(board_to_check);
-									res += "\r\nVALID";
+									res += "\nVALID";
 
 								}
 							}
@@ -235,8 +220,9 @@ public class Server {
 										}
 										
 										valid = true;
+										eating_move = true;
 										res += boardToString(board_to_check);
-										res += "\r\nVALID";
+										res += "\nVALID";
 									}
 								}
 								else if(des_pos_x == curr_pos_x-2)
@@ -258,8 +244,9 @@ public class Server {
 										}
 										
 										valid = true;
+										eating_move = true;
 										res += boardToString(board_to_check);
-										res += "\r\nVALID";
+										res += "\nVALID";
 									}
 								}
 								
@@ -287,7 +274,7 @@ public class Server {
 									
 									valid = true;
 									res += boardToString(board_to_check);
-									res += "\r\nVALID";
+									res += "\nVALID";
 								}
 							}
 							else if(des_pos_y == (curr_pos_y+2))
@@ -311,8 +298,9 @@ public class Server {
 										}
 										
 										valid = true;
+										eating_move = true;
 										res += boardToString(board_to_check);
-										res += "\r\nVALID";
+										res += "\nVALID";
 									}
 								}
 								else if(des_pos_x == curr_pos_x-2)
@@ -334,8 +322,9 @@ public class Server {
 										}
 										
 										valid = true;
+										eating_move = true;
 										res += boardToString(board_to_check);
-										res += "\r\nVALID";
+										res += "\nVALID";
 									}
 								}
 							}
@@ -353,7 +342,7 @@ public class Server {
 									
 									valid = true;
 									res += boardToString(board_to_check);
-									res += "\r\nVALID";
+									res += "\nVALID";
 								}
 							
 							}
@@ -366,7 +355,7 @@ public class Server {
 									
 									valid = true;
 									res += boardToString(board_to_check);
-									res += "\r\nVALID";
+									res += "\nVALID";
 								}
 								
 							}
@@ -381,8 +370,9 @@ public class Server {
 										board_to_check[curr_pos_y-1][curr_pos_x-1] = ' ';
 										
 										valid = true;
+										eating_move = true;
 										res += boardToString(board_to_check);
-										res += "\r\nVALID";
+										res += "\nVALID";
 									}
 								}
 								else if(des_pos_x == curr_pos_x+2)
@@ -394,8 +384,9 @@ public class Server {
 										board_to_check[curr_pos_y-1][curr_pos_x+1] = ' ';
 										
 										valid = true;
+										eating_move = true;
 										res += boardToString(board_to_check);
-										res += "\r\nVALID";
+										res += "\nVALID";
 									}
 								}
 							}
@@ -410,8 +401,9 @@ public class Server {
 										board_to_check[curr_pos_y+1][curr_pos_x-1] = ' ';
 										
 										valid = true;
+										eating_move = true;
 										res += boardToString(board_to_check);
-										res += "\r\nVALID";
+										res += "\nVALID";
 									}
 								}
 								else if(des_pos_x == curr_pos_x+2)
@@ -423,8 +415,9 @@ public class Server {
 										board_to_check[curr_pos_y+1][curr_pos_x+1] = ' ';
 										
 										valid = true;
+										eating_move = true;
 										res += boardToString(board_to_check);
-										res += "\r\nVALID";
+										res += "\nVALID";
 									}
 									
 								}
@@ -443,7 +436,7 @@ public class Server {
 									
 									valid = true;
 									res += boardToString(board_to_check);
-									res += "\r\nVALID";
+									res += "\nVALID";
 								}
 							
 							}
@@ -456,7 +449,7 @@ public class Server {
 									
 									valid = true;
 									res += boardToString(board_to_check);
-									res += "\r\nVALID";
+									res += "\nVALID";
 								}
 								
 							}
@@ -471,8 +464,9 @@ public class Server {
 										board_to_check[curr_pos_y-1][curr_pos_x-1] = ' ';
 										
 										valid = true;
+										eating_move = true;
 										res += boardToString(board_to_check);
-										res += "\r\nVALID";
+										res += "\nVALID";
 									}
 								}
 								else if(des_pos_x == curr_pos_x+2)
@@ -484,8 +478,9 @@ public class Server {
 										board_to_check[curr_pos_y-1][curr_pos_x+1] = ' ';
 										
 										valid = true;
+										eating_move = true;
 										res += boardToString(board_to_check);
-										res += "\r\nVALID";
+										res += "\nVALID";
 									}
 								}
 							}
@@ -500,8 +495,9 @@ public class Server {
 										board_to_check[curr_pos_y+1][curr_pos_x-1] = ' ';
 										
 										valid = true;
+										eating_move = true;
 										res += boardToString(board_to_check);
-										res += "\r\nVALID";
+										res += "\nVALID";
 									}
 								}
 								else if(des_pos_x == curr_pos_x+2)
@@ -513,8 +509,9 @@ public class Server {
 										board_to_check[curr_pos_y+1][curr_pos_x+1] = ' ';
 										
 										valid = true;
+										eating_move = true;
 										res += boardToString(board_to_check);
-										res += "\r\nVALID";
+										res += "\nVALID";
 									}
 									
 								}
@@ -523,7 +520,7 @@ public class Server {
 						break;
 					default:
 						res+=boardToString(board_to_check);
-						res+="\r\nINVALID";
+						res+="\nINVALID";
 						break;
 				}
 			}
@@ -532,22 +529,16 @@ public class Server {
 		if(res == "")
 		{
 			res += boardToString(board_to_check);
-			res += "\r\nINVALID";
+			res += "\nINVALID";
 		}
 		
 		// Check if second Eating move can be performed 
 		// Add next player accordingly
 		// W or B
-		if(valid)
-		{
-			if(checkEatingMove(board_to_check, des_pos))
-			{
-				res += "\r\nDUB JUMP";
-			}
-		}
+		if(valid && eating_move && checkEatingMove(board_to_check, des_pos))
+			res += "\nDUB JUMP";
 		
 		return res;
-		
 	}
 
 	public static void main(String[] args)
@@ -569,14 +560,13 @@ public class Server {
 	}
 	
 	public static class RequestHandler implements HttpHandler {
-
-
 		@Override
 		public void handle(HttpExchange request) throws IOException {
 			String response = scanRequest(request);
 			int code = 200;
 			
 			try {
+				request.getResponseHeaders().set("Access-Control-Allow-Origin", "*");
 				request.sendResponseHeaders(code, response.length());
 				OutputStream os = request.getResponseBody();
 				os.write(response.getBytes());
@@ -599,9 +589,19 @@ public class Server {
 		{
 			String[] strReqBody = breaksRequest(body);
 			
-			String[] board_init = breaksRequest(strReqBody[0]);
-			String curr_pos = strReqBody[1];
-			String des_pos = strReqBody[2];
+			String[] board_init = new String[10];
+			board_init[0] = strReqBody[0];
+			board_init[1] = strReqBody[1];
+			board_init[2] = strReqBody[2];
+			board_init[3] = strReqBody[3];
+			board_init[4] = strReqBody[4];
+			board_init[5] = strReqBody[5];
+			board_init[6] = strReqBody[6];
+			board_init[7] = strReqBody[7];
+			board_init[8] = strReqBody[8];
+			board_init[9] = strReqBody[9];
+			String curr_pos = strReqBody[10];
+			String des_pos = strReqBody[11];
 			
 			// Handles request parts and it builds a proper response
 			char[][] board = stringToBoard(board_init);
@@ -609,8 +609,6 @@ public class Server {
 			answer = checkMove(board, curr_pos, des_pos);
 			
 		}
-		
-		
 		return answer;
 	}
 	
@@ -625,6 +623,7 @@ public class Server {
 			br = new BufferedReader(new InputStreamReader(is));
 			while ((line = br.readLine()) != null) {
 				sb.append(line);
+				sb.append("\n");
 			}
  
 		} catch (IOException e) {
