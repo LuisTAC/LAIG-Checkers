@@ -219,7 +219,20 @@ Scene.prototype.buildState = function () {
         res[this.pieces[i].posY][this.pieces[i].posX] = this.pieces[i].chr;
     }
     return res;
-}
+};
+
+Scene.prototype.readState = function (state) {
+
+    this.pieces = [];
+    for (var i = 0; i < state.length - 1; i++) {
+        for (var j = 0; j < state[i].length; j++) {
+            if(state[i].charAt(j)=='W' || state[i].charAt(j)=='B' || state[i].charAt(j)=='w' || state[i].charAt(j)=='b')
+            {
+                this.pieces.push(new Piece(this, 5, 100, j, i, state[i].charAt(j)));
+            }
+        };
+    };
+};
 
 Scene.prototype.displayPieces = function () {
     
@@ -258,7 +271,7 @@ Scene.prototype.displayPieces = function () {
     this.popMatrix();
 };
 
-Scene.prototype.update = function(currTime) {
+Scene.prototype.update = function (currTime) {
 
     if(this.cameraTransition) {
         if(!this.camTransBeg) this.camTransBeg = currTime;
@@ -394,6 +407,7 @@ Scene.prototype.alt_skin = function () {
 
 Scene.prototype.sendRequest = function (pos, des_pos) {
     var request = new XMLHttpRequest();
+    request.scene=this;
     request.open('POST', 'http://localhost:8001/', true);
 
     request.onload = this.handleReply;
@@ -408,8 +422,8 @@ Scene.prototype.sendRequest = function (pos, des_pos) {
         };
         body+='\n';
     };
-    body+= pos[0] + "," + pos[1] + "\n";
-    body+= des_pos[0] + "," + des_pos[1] + "\n";
+    body+= pos[0] + " " + pos[1] + "\n";
+    body+= des_pos[0] + " " + des_pos[1] + "\n";
 
     request.send(body);
 };
@@ -417,8 +431,8 @@ Scene.prototype.sendRequest = function (pos, des_pos) {
 //Handle the Reply
 Scene.prototype.handleReply = function(data) {
     
-    console.log("Request successful. Reply: " + data.target.response);
-    document.querySelector("#query_result").innerHTML=data.target.response;
+    var state = data.target.response.split("\n");
+    this.scene.readState(state);
 };
 
 //Utils
