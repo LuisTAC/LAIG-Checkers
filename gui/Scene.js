@@ -62,6 +62,10 @@ Scene.prototype.init = function (application) {
     this.states = [];
     this.states.push(state);
 
+    //film
+    this.film_playing = false;
+    this.counter = 0;
+
     //pieces
     this.pieces = [];
     //B
@@ -266,13 +270,12 @@ Scene.prototype.readState = function (state) {
         if(this.player!=state[11])
         {
             this.player=state[11];
-            if(this.player=='w') this.cameraWhite();
-            else this.cameraBlack();
+            //if(this.player=='w') this.cameraWhite();
+            //else this.cameraBlack();
         }
         return true;
     }
 };
-
 
 Scene.prototype.displayPieces = function () {
     
@@ -313,41 +316,77 @@ Scene.prototype.displayPieces = function () {
 
 Scene.prototype.update = function (currTime) {
 
-    if(this.cameraTransition) {
-        if(!this.camTransBeg) this.camTransBeg = currTime;
+    if(this.film_playing)
+    {
+        var numStates = this.states.length;
+        var duration = 2000*numStates;
+
+        //film playing logic
+        if(!this.filmPlayingBeg)
+        {
+            this.filmPlayingBeg = currTime;
+            this.readState(this.states[0]);
+        }
         else
         {
-            var time_since_start = currTime - this.camTransBeg;
-            if(time_since_start>=this.camTransTime) {
-                this.camera.setPosition(this.cameraDestination);
-                this.camTransBeg=null;
-                this.cameraTransition=false;
+            var time_since_start = currTime - this.filmPlayingBeg;
+            if(time_since_start >= duration)
+            {
+                this.counter = 0;
+                this.film_playing = false;
+                this.filmPlayingBeg = null;
             }
-            else {
-                var time_perc = time_since_start / this.camTransTime;
-                var new_pos = [this.cameraOrigin[0]+(this.transitionVec[0]*time_perc),
-                this.cameraOrigin[1]+(this.transitionVec[1]*time_perc),
-                this.cameraOrigin[2]+(this.transitionVec[2]*time_perc)];
-                this.camera.setPosition(new_pos);
+            else
+            {
+                var currState = Math.floor(time_since_start/2000);
+
+                //readState from current state
+                if(currState > this.counter)
+                {
+                    this.counter = currState;
+                    this.readState(this.states[this.counter]);
+                }
             }
         }
     }
-    if(this.pieceTransition) {
-        if(!this.pieceTransBeg) this.pieceTransBeg = currTime;
-        else
-        {
-            var time_since_start = currTime-this.pieceTransBeg;
-            if(time_since_start >= this.pieceTransTime) {
-                this.pickedPiece.height = this.pieceFinalHeight;
-                this.pieceTransBeg = null;
-                this.pieceTransition = false;
-            }
-            else {
-                var time_perc = time_since_start/this.pieceTransTime;
-                this.pickedPiece.height = this.pieceFinalHeight*time_perc;
+    else
+    {
+        if(this.cameraTransition) {
+            if(!this.camTransBeg) this.camTransBeg = currTime;
+            else
+            {
+                var time_since_start = currTime - this.camTransBeg;
+                if(time_since_start>=this.camTransTime) {
+                    this.camera.setPosition(this.cameraDestination);
+                    this.camTransBeg=null;
+                    this.cameraTransition=false;
+                }
+                else {
+                    var time_perc = time_since_start / this.camTransTime;
+                    var new_pos = [this.cameraOrigin[0]+(this.transitionVec[0]*time_perc),
+                    this.cameraOrigin[1]+(this.transitionVec[1]*time_perc),
+                    this.cameraOrigin[2]+(this.transitionVec[2]*time_perc)];
+                    this.camera.setPosition(new_pos);
+                }
             }
         }
-    }    
+        if(this.pieceTransition) {
+            if(!this.pieceTransBeg) this.pieceTransBeg = currTime;
+            else
+            {
+                var time_since_start = currTime-this.pieceTransBeg;
+                if(time_since_start >= this.pieceTransTime) {
+                    this.pickedPiece.height = this.pieceFinalHeight;
+                    this.pieceTransBeg = null;
+                    this.pieceTransition = false;
+                }
+                else {
+                    var time_perc = time_since_start/this.pieceTransTime;
+                    this.pickedPiece.height = this.pieceFinalHeight*time_perc;
+                }
+            }
+        } 
+    } 
 };
 
 //Cameras
@@ -406,6 +445,12 @@ Scene.prototype.undo = function() {
 
     var state = this.states[this.states.length-1];
     this.readState(state);
+};
+
+//Film
+Scene.prototype.test_film = function() {
+    this.film_playing = true;
+
 };
 
 //Picking
