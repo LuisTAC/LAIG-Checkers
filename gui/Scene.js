@@ -139,7 +139,7 @@ Scene.prototype.initCameras = function () {
     this.camera = new CGFcamera(0.4, 0.01, 500, vec3.fromValues(20, 10, 0), vec3.fromValues(0, 0, 0));
     this.cameraDestination = [20,10,0];
     this.cameraTransition = false;
-    this.camTransTime = 2000;
+    this.camTransTime = 1000;
 };
 
 Scene.prototype.initMaterials = function () {
@@ -263,7 +263,12 @@ Scene.prototype.readState = function (state) {
     else if(state[10]=="VALID")
     {
         console.log("valid move!");
-        this.player=state[11];
+        if(this.player!=state[11])
+        {
+            this.player=state[11];
+            if(this.player=='w') this.cameraWhite();
+            else this.cameraBlack();
+        }
         return true;
     }
 };
