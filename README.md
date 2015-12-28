@@ -8,6 +8,7 @@ Checkers board game using webgl through a custom library WebCGF (v0.18)
 
 * [WebCGF](https://paginas.fe.up.pt/~ruirodrig/pub/sw/webcgf/docs/)
 * [Red Led Font (texture)](http://www.psdgraphics.com/psd/red-led-font-psd/) (modified)
+* [dat.GUI](https://workshop.chromeexperiments.com/examples/gui/#1--Basic-Usage)
 
 ### Notes
 

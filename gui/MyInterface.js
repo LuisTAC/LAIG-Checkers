@@ -37,6 +37,7 @@ MyInterface.prototype.init = function(application) {
 	cameras.add(this.scene, 'cameraWhite');
 	cameras.add(this.scene, 'cameraBlack');
 	cameras.add(this.scene, 'cameraScore');
+	cameras.add(this.scene, 'cameraTimer');
 
 	var film=this.gui.addFolder("Film");
 	film.add(this.scene, 'film_delay', 1, 5);

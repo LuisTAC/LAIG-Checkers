@@ -104,6 +104,8 @@ Scene.prototype.init = function (application) {
 
     this.scoreboard = new Scoreboard(this,this.matWOODBRIGHT,this.fontRED);
 
+    this.timer = new Timer(this,this.matWOODBRIGHT,this.fontRED);
+
     this.player = 'w';
 };
 
@@ -227,7 +229,7 @@ Scene.prototype.display = function () {
 	// Apply transformations corresponding to the camera position relative to the origin
 	this.applyViewMatrix();
 	
-    this.axis.display();
+    //this.axis.display();
 
 	// ---- END Background, camera and axis setup
 
@@ -238,6 +240,13 @@ Scene.prototype.display = function () {
         this.translate(0,1,-7);
         this.scoreboard.display();
     this.popMatrix();
+
+    this.pushMatrix();
+        this.translate(0,1,7);
+        this.rotate(180*degToRad,0,1,0);
+        this.timer.display();
+    this.popMatrix();
+
     this.displayPieces();
 };
 
@@ -287,8 +296,10 @@ Scene.prototype.readState = function (state) {
         if(this.player!=state[11])
         {
             this.player=state[11];
-            if(this.player=='w') this.cameraWhite();
-            else this.cameraBlack();
+            if(!this.film_playing) {
+                if(this.player=='w') this.cameraWhite();
+                else this.cameraBlack();
+            }
 
             var score = this.getScore();
             this.scoreboard.setCounters(score.w,score.b);
@@ -336,25 +347,35 @@ Scene.prototype.displayPieces = function () {
 
 Scene.prototype.update = function (currTime) {
 
+    if(!this.timer.timeBeg) this.timer.timeBeg = currTime;
+    this.timer.updateTime(currTime);
+
     if(this.film_playing)
     {
         var numStates = this.states.length;
         var duration = this.film_delay*1000*numStates;
 
         //film playing logic
-        if(!this.filmPlayingBeg)
+        if(!this.filmPlayingBeg) //BEGINNING
         {
             this.filmPlayingBeg = currTime;
+            this.timer.timeBeg=currTime-this.timer.timeBeg;
             this.readState(this.states[0]);
+            this.timer.setPaused(true);
         }
         else
         {
             var time_since_start = currTime - this.filmPlayingBeg;
-            if(time_since_start >= duration)
+            if(time_since_start >= duration) //END
             {
                 this.counter = 0;
                 this.film_playing = false;
                 this.filmPlayingBeg = null;
+                this.timer.timeBeg=currTime-this.timer.timeBeg;
+
+                if(this.player=='w') this.cameraWhite();
+                else this.cameraBlack();
+                this.timer.setPaused(false);
             }
             else
             {
@@ -369,44 +390,41 @@ Scene.prototype.update = function (currTime) {
             }
         }
     }
-    else
-    {
-        if(this.cameraTransition) {
-            if(!this.camTransBeg) this.camTransBeg = currTime;
-            else
-            {
-                var time_since_start = currTime - this.camTransBeg;
-                if(time_since_start>=this.camTransTime) {
-                    this.camera.setPosition(this.cameraDestination);
-                    this.camTransBeg=null;
-                    this.cameraTransition=false;
-                }
-                else {
-                    var time_perc = time_since_start / this.camTransTime;
-                    var new_pos = [this.cameraOrigin[0]+(this.transitionVec[0]*time_perc),
-                    this.cameraOrigin[1]+(this.transitionVec[1]*time_perc),
-                    this.cameraOrigin[2]+(this.transitionVec[2]*time_perc)];
-                    this.camera.setPosition(new_pos);
-                }
+    if(this.cameraTransition) {
+        if(!this.camTransBeg) this.camTransBeg = currTime;  //BEGINNING
+        else
+        {
+            var time_since_start = currTime - this.camTransBeg;
+            if(time_since_start>=this.camTransTime) { //END
+                this.camera.setPosition(this.cameraDestination);
+                this.camTransBeg=null;
+                this.cameraTransition=false;
+            }
+            else {
+                var time_perc = time_since_start / this.camTransTime;
+                var new_pos = [this.cameraOrigin[0]+(this.transitionVec[0]*time_perc),
+                this.cameraOrigin[1]+(this.transitionVec[1]*time_perc),
+                this.cameraOrigin[2]+(this.transitionVec[2]*time_perc)];
+                this.camera.setPosition(new_pos);
             }
         }
-        if(this.pieceTransition) {
-            if(!this.pieceTransBeg) this.pieceTransBeg = currTime;
-            else
-            {
-                var time_since_start = currTime-this.pieceTransBeg;
-                if(time_since_start >= this.pieceTransTime) {
-                    this.pickedPiece.height = this.pieceFinalHeight;
-                    this.pieceTransBeg = null;
-                    this.pieceTransition = false;
-                }
-                else {
-                    var time_perc = time_since_start/this.pieceTransTime;
-                    this.pickedPiece.height = this.pieceFinalHeight*time_perc;
-                }
+    }
+    if(this.pieceTransition) {
+        if(!this.pieceTransBeg) this.pieceTransBeg = currTime;  //BEGINNING
+        else
+        {
+            var time_since_start = currTime-this.pieceTransBeg;
+            if(time_since_start >= this.pieceTransTime) { //END
+                this.pickedPiece.height = this.pieceFinalHeight;
+                this.pieceTransBeg = null;
+                this.pieceTransition = false;
             }
-        } 
-    } 
+            else {
+                var time_perc = time_since_start/this.pieceTransTime;
+                this.pickedPiece.height = this.pieceFinalHeight*time_perc;
+            }
+        }
+    }
 };
 
 //Cameras
@@ -456,6 +474,15 @@ Scene.prototype.cameraScore = function() {
     }
 };
 
+Scene.prototype.cameraTimer = function() {
+
+    if(!this.cameraTransition) {
+        this.cameraOrigin=[this.camera.position[0], this.camera.position[1], this.camera.position[2]];
+        this.cameraDestination = [0,10,-20];
+        if(!arraysEqual(this.cameraDestination, this.cameraOrigin)) this.calcTransition();
+    }
+};
+
 Scene.prototype.calcTransition = function() {
     this.transitionVec = [this.cameraDestination[0]-this.cameraOrigin[0],
             this.cameraDestination[1]-this.cameraOrigin[1],
@@ -479,7 +506,11 @@ Scene.prototype.undo = function() {
 //Film
 Scene.prototype.test_film = function() {
 
-    this.film_playing = true;
+    if(this.states.length>1) {
+        this.film_playing = true;
+        if(this.player=='w') this.cameraTopWhite();
+        else this.cameraTopBlack();
+    }
 };
 
 //Picking
@@ -521,15 +552,23 @@ Scene.prototype.alt_skin = function () {
     {
         this.skin=2;
         this.board.setMatWOOD(this.matWOODDARK);
+        
         this.scoreboard.setMatWOOD(this.matWOODDARK);
         this.scoreboard.setFont(this.fontWHITE);
+
+        this.timer.setMatWOOD(this.matWOODDARK);
+        this.timer.setFont(this.fontWHITE);
     }
     else
     {
         this.skin=1;
         this.board.setMatWOOD(this.matWOODBRIGHT);
+
         this.scoreboard.setMatWOOD(this.matWOODBRIGHT);
         this.scoreboard.setFont(this.fontRED);
+
+        this.timer.setMatWOOD(this.matWOODBRIGHT);
+        this.timer.setFont(this.fontRED);
     }
 };
 

@@ -164,7 +164,6 @@ Scoreboard.prototype.displayScore = function () {
 		var uniB = this.counterB%10;
 
 		this.scene.translate(0,-0.2,0.25);
-		//this.scene.translate(0,0,0.25);
 
 		this.scene.activeShader.setUniformsValues({'charCoords': [decB,5]});
 		this.scene.pushMatrix();
