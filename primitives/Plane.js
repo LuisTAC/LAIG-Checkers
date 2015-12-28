@@ -1,4 +1,4 @@
-function MyPlane(scene, nrDiv){
+function Plane(scene, nrDiv){
 
 	var controlVertexes = [	// U = 0
 						[ // V = 0..1;
@@ -13,9 +13,9 @@ function MyPlane(scene, nrDiv){
 						]
 	];
 
-    MyPatch.call(this, scene, 1, nrDiv, 1, nrDiv, controlVertexes);
+    Patch.call(this, scene, 1, nrDiv, nrDiv, controlVertexes);
 }
 
 
-MyPlane.prototype = Object.create(MyPatch.prototype);
-MyPlane.prototype.constructor = MyPlane;
+Plane.prototype = Object.create(Patch.prototype);
+Plane.prototype.constructor = Plane;

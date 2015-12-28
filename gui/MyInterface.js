@@ -36,10 +36,13 @@ MyInterface.prototype.init = function(application) {
 	cameras.add(this.scene, 'cameraTopBlack');
 	cameras.add(this.scene, 'cameraWhite');
 	cameras.add(this.scene, 'cameraBlack');
+	cameras.add(this.scene, 'cameraScore');
+
+	var film=this.gui.addFolder("Film");
+	film.add(this.scene, 'film_delay', 1, 5);
+	film.add(this.scene, 'test_film');
 
 	this.gui.add(this.scene, 'undo');
-	this.gui.add(this.scene, 'test_film');
-
 	this.gui.add(this.scene, 'alt_skin');
 
 	// add a group of controls (and open/expand by defult)

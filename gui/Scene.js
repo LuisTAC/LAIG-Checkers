@@ -35,6 +35,9 @@ Scene.prototype.init = function (application) {
     this.myShader.setUniformsValues({normScale: 0.05});
     this.myShader.setUniformsValues({uSampler2: 1});
 
+    this.textShader=new CGFshader(this.gl, dir_shaders+"font.vert", dir_shaders+"font.frag");
+    this.textShader.setUniformsValues({'dims': [10, 6]});
+
 	this.axis = new CGFaxis(this);
 
     this.setUpdatePeriod(updatePeriod);
@@ -64,6 +67,7 @@ Scene.prototype.init = function (application) {
 
     //film
     this.film_playing = false;
+    this.film_delay = 2;
     this.counter = 0;
 
     //pieces
@@ -96,12 +100,9 @@ Scene.prototype.init = function (application) {
     this.pieces.push(new Piece(this, 5, 100, 5, 6, 'W'));
     this.pieces.push(new Piece(this, 5, 100, 7, 6, 'W'));
 
-    var matBoardBLACK = new CGFappearance(this);
-    matBoardBLACK.setAmbient(0.05, 0.05, 0.05, 1.0);
-    matBoardBLACK.setDiffuse(0.05, 0.05, 0.05, 1.0);
-    matBoardBLACK.setSpecular(0.02, 0.02, 0.02, 1.0);
-    matBoardBLACK.setShininess(2.0);
-    this.board = new Board(this,this.matWOOD,this.matWHITE,matBoardBLACK);
+    this.board = new Board(this,this.matWOODBRIGHT,this.matWHITE,this.matBLACK);
+
+    this.scoreboard = new Scoreboard(this,this.matWOODBRIGHT,this.fontRED);
 
     this.player = 'w';
 };
@@ -151,7 +152,7 @@ Scene.prototype.initMaterials = function () {
     this.matSILVER = new CGFappearance(this);
     this.matSILVER.setAmbient(0.2, 0.2, 0.2, 1.0);
     this.matSILVER.setDiffuse(0.2, 0.2, 0.2, 1.0);
-    this.matSILVER.setSpecular(0.2, 0.2, 0.2, 1.0);
+    this.matSILVER.setSpecular(0.8, 0.8, 0.8, 1.0);
     this.matSILVER.setShininess(10.0);
 
     this.matGOLD = new CGFappearance(this);
@@ -178,11 +179,23 @@ Scene.prototype.initMaterials = function () {
     this.matWOOD.setSpecular(0.15, 0.11, 0.05, 1);
     this.matWOOD.setShininess(10.0);
 
+    this.matWOODBRIGHT = new CGFappearance(this);
+    this.matWOODBRIGHT.setAmbient(0.5, 0.5, 0.5, 1.0);
+    this.matWOODBRIGHT.setDiffuse(0.5, 0.5, 0.5, 1.0);
+    this.matWOODBRIGHT.setSpecular(0.2, 0.2, 0.2, 1.0);
+    this.matWOODBRIGHT.setShininess(2.0);
+    this.matWOODBRIGHT.setTexture(new CGFtexture(this, dir_resources+"wood.jpg"));
+
     this.matWOODDARK = new CGFappearance(this);
-    this.matWOODDARK.setAmbient(0.09, 0.02, 0.01, 1);
-    this.matWOODDARK.setDiffuse(0.09, 0.02, 0.01, 1);
+    this.matWOODDARK.setAmbient(0.16, 0.04, 0.02, 1);
+    this.matWOODDARK.setDiffuse(0.16, 0.04, 0.02, 1);
     this.matWOODDARK.setSpecular(0.1, 0.02, 0.02, 1);
     this.matWOODDARK.setShininess(2.0);
+    this.matWOODDARK.setTexture(new CGFtexture(this, dir_resources+"wood.jpg"));
+
+    this.fontRED = new CGFtexture(this, dir_resources+"red-led-font.jpg");
+    this.fontYELLOW = new CGFtexture(this, dir_resources+"yellow-led-font.jpg");
+    this.fontWHITE = new CGFtexture(this, dir_resources+"white-led-font.jpg");
 };
 
 Scene.prototype.initPicking = function () {
@@ -220,7 +233,11 @@ Scene.prototype.display = function () {
 
     this.updateLights();
 
-    this.board.display();    
+    this.board.display();
+    this.pushMatrix();
+        this.translate(0,1,-7);
+        this.scoreboard.display();
+    this.popMatrix();
     this.displayPieces();
 };
 
@@ -270,8 +287,11 @@ Scene.prototype.readState = function (state) {
         if(this.player!=state[11])
         {
             this.player=state[11];
-            //if(this.player=='w') this.cameraWhite();
-            //else this.cameraBlack();
+            if(this.player=='w') this.cameraWhite();
+            else this.cameraBlack();
+
+            var score = this.getScore();
+            this.scoreboard.setCounters(score.w,score.b);
         }
         return true;
     }
@@ -319,7 +339,7 @@ Scene.prototype.update = function (currTime) {
     if(this.film_playing)
     {
         var numStates = this.states.length;
-        var duration = 2000*numStates;
+        var duration = this.film_delay*1000*numStates;
 
         //film playing logic
         if(!this.filmPlayingBeg)
@@ -338,7 +358,7 @@ Scene.prototype.update = function (currTime) {
             }
             else
             {
-                var currState = Math.floor(time_since_start/2000);
+                var currState = Math.floor(time_since_start/(this.film_delay*1000));
 
                 //readState from current state
                 if(currState > this.counter)
@@ -427,6 +447,15 @@ Scene.prototype.cameraBlack = function() {
     }
 };
 
+Scene.prototype.cameraScore = function() {
+
+    if(!this.cameraTransition) {
+        this.cameraOrigin=[this.camera.position[0], this.camera.position[1], this.camera.position[2]];
+        this.cameraDestination = [0,10,20];
+        if(!arraysEqual(this.cameraDestination, this.cameraOrigin)) this.calcTransition();
+    }
+};
+
 Scene.prototype.calcTransition = function() {
     this.transitionVec = [this.cameraDestination[0]-this.cameraOrigin[0],
             this.cameraDestination[1]-this.cameraOrigin[1],
@@ -449,8 +478,8 @@ Scene.prototype.undo = function() {
 
 //Film
 Scene.prototype.test_film = function() {
-    this.film_playing = true;
 
+    this.film_playing = true;
 };
 
 //Picking
@@ -492,11 +521,15 @@ Scene.prototype.alt_skin = function () {
     {
         this.skin=2;
         this.board.setMatWOOD(this.matWOODDARK);
+        this.scoreboard.setMatWOOD(this.matWOODDARK);
+        this.scoreboard.setFont(this.fontWHITE);
     }
     else
     {
         this.skin=1;
-        this.board.setMatWOOD(this.matWOOD);
+        this.board.setMatWOOD(this.matWOODBRIGHT);
+        this.scoreboard.setMatWOOD(this.matWOODBRIGHT);
+        this.scoreboard.setFont(this.fontRED);
     }
 };
 
@@ -525,14 +558,27 @@ Scene.prototype.sendRequest = function (pos, des_pos) {
     request.send(body);
 };
 
-//Handle the Reply
-Scene.prototype.handleReply = function(data) {
+Scene.prototype.handleReply = function (data) {
     
     var state = data.target.response.split("\n");
     if(this.scene.readState(state))
     {
         this.scene.states.push(state);
     }
+};
+
+//Score
+
+Scene.prototype.getScore = function (chr) {
+
+    var ctr_w=0;
+    var ctr_b=0;
+
+    for (var i = 0; i < this.pieces.length; i++) {
+        if(this.pieces[i].chr=='w' || this.pieces[i].chr=='W') ctr_w++;
+        else if(this.pieces[i].chr=='b' || this.pieces[i].chr=='B') ctr_b++;
+    };
+    return {w:12-ctr_b,b:12-ctr_w};
 };
 
 //Utils

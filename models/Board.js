@@ -10,10 +10,11 @@ function Board(scene, matWOOD, matWHITE, matBLACK) {
  	this.matWHITE=matWHITE;
  	this.matBLACK=matBLACK;
 
-	this.side = new MyRectangle(scene,-5.7,0.5,5.7,-0.5)
+	this.side = new MyRectangle(scene,-5.7,0.5,5.7,-0.5);
+	this.side.updateTex(1,1);
 
-	this.rectangle = new MyRectangle(scene,-5.15,5.15,5.15,-5.15);
 	this.bottom = new MyRectangle(scene,-5.7,5.7,5.7,-5.7);
+	this.bottom.updateTex(1,1);
 	
 	var controlpoints = [	// U = 0
 						[ // V = 0..2;
@@ -51,10 +52,12 @@ function Board(scene, matWOOD, matWHITE, matBLACK) {
 						]
 	];
     this.corner = new MyPatch(scene, 2, 20, 2, 20, controlpoints2);
-
-    this.cell = new MyRectangle(scene,-0.65,0.65,0.65,-0.65);
+    
     this.cells = [];
-    for(i=0;i<64; i++) this.cells.push(new MyRectangle(scene,-0.65,0.65,0.65,-0.65));
+    for(i=0;i<64; i++) {
+    	this.cells.push(new MyRectangle(scene,-0.65,0.65,0.65,-0.65))
+    	this.cells[this.cells.length-1].updateTex(1,1);
+    }
 };
 
 Board.prototype = Object.create(CGFobject.prototype);
@@ -103,14 +106,14 @@ Board.prototype.display = function () {
  			this.scene.popMatrix();
  		}
  	}
-
+ 	
  	this.scene.pushMatrix();
  		this.scene.translate(0,-1,0);
  		this.scene.rotate(90*degToRad,1,0,0);
  		this.matWOOD.apply();
  		this.bottom.display();
  	this.scene.popMatrix();
-
+	
  	this.scene.pushMatrix();
  		this.scene.translate(5.45,0,0);
  		this.scene.scale(1,1,10.4);

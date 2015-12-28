@@ -9,7 +9,7 @@ function Piece(scene, stacks, slices, posX, posY, chr) {
 	this.slices = slices;
 	this.scene = scene;
 
-	this.circle = new MyCircle(scene, slices);
+	this.circle = new MyCircle(scene, 0.5, slices);
 	this.cylinder = new MyCylinder(scene,0.5,0.5,0.5,stacks,slices);
 	this.posX = posX;
 	this.posY = posY;

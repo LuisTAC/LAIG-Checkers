@@ -1,9 +1,9 @@
-function MyTerrain(scene, num_divs, tex, h_map) {
-	MyPlane.call(this, scene, num_divs);
+function MyTerrain(scene, nrDiv, texture, heightmap) {
+    MyPlane.call(this, scene, nrDiv);
 
-	this.tex = tex;
-	this.h_map = h_map;
-};
+    this.texture = texture;
+    this.heightmap = heightmap;
+}
 
 MyTerrain.prototype = Object.create(MyPlane.prototype);
 MyTerrain.prototype.constructor = MyTerrain;
