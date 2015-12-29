@@ -21,12 +21,8 @@ function Scoreboard(scene, matWOOD, fontText) {
 
 	this.plane = new MyPlane(scene,5);
 
-	this.appearance = new CGFappearance(scene);
-	this.appearance.setAmbient(0.3, 0.3, 0.3, 1);
-	this.appearance.setDiffuse(0.7, 0.7, 0.7, 1);
-	this.appearance.setSpecular(0.0, 0.0, 0.0, 1);	
-	this.appearance.setShininess(120);
-	this.appearance.setTexture(fontText);
+	this.appearance = scene.defaultApp;
+	this.fontText = fontText;
 
 	this.counterW=0;
 	this.counterB=0;
@@ -146,6 +142,7 @@ Scoreboard.prototype.display = function () {
  		this.scene.popMatrix();
 
  		//TEXT
+ 		this.appearance.setTexture(this.fontText);
  		this.displayScore();
 
  	this.scene.popMatrix();

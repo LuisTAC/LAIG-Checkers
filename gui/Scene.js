@@ -106,6 +106,9 @@ Scene.prototype.init = function (application) {
 
     this.timer = new Timer(this,this.matWOODBRIGHT,this.fontRED);
 
+    this.boxSide = new MyRectangle(this,-50,50,50,-50);
+    this.boxSide.updateTex(100,100);
+
     this.player = 'w';
 };
 
@@ -151,6 +154,12 @@ Scene.prototype.initCameras = function () {
 
 Scene.prototype.initMaterials = function () {
 
+    this.defaultApp = new CGFappearance(this);
+    this.defaultApp.setAmbient(0.3, 0.3, 0.3, 1);
+    this.defaultApp.setDiffuse(0.7, 0.7, 0.7, 1);
+    this.defaultApp.setSpecular(0.0, 0.0, 0.0, 1);  
+    this.defaultApp.setShininess(120);
+
     this.matSILVER = new CGFappearance(this);
     this.matSILVER.setAmbient(0.2, 0.2, 0.2, 1.0);
     this.matSILVER.setDiffuse(0.2, 0.2, 0.2, 1.0);
@@ -195,9 +204,20 @@ Scene.prototype.initMaterials = function () {
     this.matWOODDARK.setShininess(2.0);
     this.matWOODDARK.setTexture(new CGFtexture(this, dir_resources+"wood.jpg"));
 
+    // FONT TEXTURES
+
     this.fontRED = new CGFtexture(this, dir_resources+"red-led-font.jpg");
     this.fontYELLOW = new CGFtexture(this, dir_resources+"yellow-led-font.jpg");
     this.fontWHITE = new CGFtexture(this, dir_resources+"white-led-font.jpg");
+
+    //SKYBOX TEXTURES
+
+    this.sky1_back = new CGFtexture(this, dir_resources+"sky1/sky1_back.bmp");
+    this.sky1_bottom = new CGFtexture(this, dir_resources+"sky1/sky1_bottom.bmp");
+    this.sky1_front = new CGFtexture(this, dir_resources+"sky1/sky1_front.bmp");
+    this.sky1_left = new CGFtexture(this, dir_resources+"sky1/sky1_left.bmp");
+    this.sky1_right = new CGFtexture(this, dir_resources+"sky1/sky1_right.bmp");
+    this.sky1_top = new CGFtexture(this, dir_resources+"sky1/sky1_top.bmp");
 };
 
 Scene.prototype.initPicking = function () {
@@ -229,11 +249,13 @@ Scene.prototype.display = function () {
 	// Apply transformations corresponding to the camera position relative to the origin
 	this.applyViewMatrix();
 	
-    //this.axis.display();
+    this.axis.display();
 
 	// ---- END Background, camera and axis setup
 
     this.updateLights();
+
+    this.displaySkybox();
 
     this.board.display();
     this.pushMatrix();
@@ -307,6 +329,63 @@ Scene.prototype.readState = function (state) {
         return true;
     }
 };
+
+Scene.prototype.displaySkybox = function () {
+
+    this.pushMatrix(); // BACK (WHITE)
+        this.defaultApp.setTexture(this.sky1_back);
+        this.defaultApp.apply();
+        this.translate(50,0,0);
+        this.rotate(-90*degToRad,0,1,0);
+        this.boxSide.display();
+    this.popMatrix();
+
+    this.pushMatrix(); // RIGHT (SCORE)
+        this.defaultApp.setTexture(this.sky1_right);
+        this.defaultApp.apply();
+        this.rotate(90*degToRad,0,1,0);
+        this.translate(50,0,0);
+        this.rotate(-90*degToRad,0,1,0);
+        this.boxSide.display();
+    this.popMatrix();
+
+
+    this.pushMatrix(); // FRONT (BLACK)
+        this.defaultApp.setTexture(this.sky1_front);
+        this.defaultApp.apply();
+        this.rotate(180*degToRad,0,1,0);
+        this.translate(50,0,0);
+        this.rotate(-90*degToRad,0,1,0);
+        this.boxSide.display();
+    this.popMatrix();
+
+    this.pushMatrix(); // LEFT (TIMER)
+        this.defaultApp.setTexture(this.sky1_left);
+        this.defaultApp.apply();
+        this.rotate(-90*degToRad,0,1,0);
+        this.translate(50,0,0);
+        this.rotate(-90*degToRad,0,1,0);
+        this.boxSide.display();
+    this.popMatrix();
+
+    this.pushMatrix(); // TOP
+        this.defaultApp.setTexture(this.sky1_top);
+        this.defaultApp.apply();
+        this.rotate(-90*degToRad,0,0,1);
+        this.translate(-50,0,0);
+        this.rotate(90*degToRad,0,1,0);
+        this.boxSide.display();
+    this.popMatrix();
+
+    this.pushMatrix(); // BOTTOM
+        this.defaultApp.setTexture(this.sky1_bottom);
+        this.defaultApp.apply();
+        this.rotate(90*degToRad,0,0,1);
+        this.translate(-50,0,0);
+        this.rotate(90*degToRad,0,1,0);
+        this.boxSide.display();
+    this.popMatrix();
+}
 
 Scene.prototype.displayPieces = function () {
     

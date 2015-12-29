@@ -21,12 +21,8 @@ function Timer(scene, matWOOD, fontText) {
 
 	this.plane = new MyPlane(scene,5);
 
-	this.appearance = new CGFappearance(scene);
-	this.appearance.setAmbient(0.3, 0.3, 0.3, 1);
-	this.appearance.setDiffuse(0.7, 0.7, 0.7, 1);
-	this.appearance.setSpecular(0.0, 0.0, 0.0, 1);	
-	this.appearance.setShininess(120);
-	this.appearance.setTexture(fontText);
+	this.appearance = scene.defaultApp;
+	this.fontText = fontText;
 
 	this.minutes=0;
 	this.seconds=0;
@@ -148,6 +144,7 @@ Timer.prototype.display = function () {
  		this.scene.popMatrix();
 
  		//TEXT
+ 		this.appearance.setTexture(this.fontText);
  		if(this.paused) this.displayPaused();
  		else this.displayTime();
 
