@@ -15,7 +15,7 @@ Scene.prototype.init = function (application) {
     
     CGFscene.prototype.init.call(this, application);
 
-    this.setGlobalAmbientLight(0.25, 0.25, 0.25, 1.0);
+    this.setGlobalAmbientLight(0.5, 0.5, 0.5, 1.0);
     this.initCameras();
     this.initLights();
     this.initMaterials();
@@ -106,26 +106,26 @@ Scene.prototype.init = function (application) {
 
     this.timer = new Timer(this,this.matWOODBRIGHT,this.fontRED);
 
-    this.boxSide = new MyRectangle(this,-50,50,50,-50);
-    this.boxSide.updateTex(100,100);
+    this.boxSide = new MyRectangle(this,-50.1,50.1,50.1,-50.1);
+    this.boxSide.updateTex(100.2,100.2);
 
     this.player = 'w';
 };
 
 Scene.prototype.initLights = function () {
 
-    this.lights[0].setPosition(0, 10, 10, 1);
+    this.lights[0].setPosition(0, 25, 10, 1);
     this.lights[0].setAmbient(0, 0, 0, 1);
-    this.lights[0].setDiffuse(1, 1, 1, 1);
+    this.lights[0].setDiffuse(0.6, 0.6, 0.6, 1);
     this.lights[0].setSpecular(1, 1, 1, 1);
     this.lights[0].enable();
     this.lights[0].ena=true;
     this.lights[0].setVisible(true);
     this.lights[0].update();
 
-    this.lights[1].setPosition(0, 10, -10, 1);
+    this.lights[1].setPosition(0, 25, -10, 1);
     this.lights[1].setAmbient(0, 0, 0, 1);
-    this.lights[1].setDiffuse(1, 1, 1, 1);
+    this.lights[1].setDiffuse(0.6, 0.6, 0.6, 1);
     this.lights[1].setSpecular(1, 1, 1, 1);
     this.lights[1].enable();
     this.lights[1].ena=true;
@@ -212,12 +212,25 @@ Scene.prototype.initMaterials = function () {
 
     //SKYBOX TEXTURES
 
-    this.sky1_back = new CGFtexture(this, dir_resources+"sky1/sky1_back.bmp");
-    this.sky1_bottom = new CGFtexture(this, dir_resources+"sky1/sky1_bottom.bmp");
-    this.sky1_front = new CGFtexture(this, dir_resources+"sky1/sky1_front.bmp");
-    this.sky1_left = new CGFtexture(this, dir_resources+"sky1/sky1_left.bmp");
-    this.sky1_right = new CGFtexture(this, dir_resources+"sky1/sky1_right.bmp");
-    this.sky1_top = new CGFtexture(this, dir_resources+"sky1/sky1_top.bmp");
+    this.sky1 = {
+        back: new CGFtexture(this, dir_resources+"sky1/sky1_back.bmp"),
+        bottom: new CGFtexture(this, dir_resources+"sky1/sky1_bottom.bmp"),
+        front : new CGFtexture(this, dir_resources+"sky1/sky1_front.bmp"),
+        left : new CGFtexture(this, dir_resources+"sky1/sky1_left.bmp"),
+        right : new CGFtexture(this, dir_resources+"sky1/sky1_right.bmp"),
+        top : new CGFtexture(this, dir_resources+"sky1/sky1_top.bmp")
+    };
+
+    this.sky2 = {
+        back: new CGFtexture(this, dir_resources+"sky2/sky2_back.bmp"),
+        bottom: new CGFtexture(this, dir_resources+"sky2/sky2_bottom.bmp"),
+        front : new CGFtexture(this, dir_resources+"sky2/sky2_front.bmp"),
+        left : new CGFtexture(this, dir_resources+"sky2/sky2_left.bmp"),
+        right : new CGFtexture(this, dir_resources+"sky2/sky2_right.bmp"),
+        top : new CGFtexture(this, dir_resources+"sky2/sky2_top.bmp")
+    };
+
+    this.sky=this.sky1;
 };
 
 Scene.prototype.initPicking = function () {
@@ -253,9 +266,9 @@ Scene.prototype.display = function () {
 
 	// ---- END Background, camera and axis setup
 
-    this.updateLights();
-
     this.displaySkybox();
+
+    this.updateLights();
 
     this.board.display();
     this.pushMatrix();
@@ -333,7 +346,7 @@ Scene.prototype.readState = function (state) {
 Scene.prototype.displaySkybox = function () {
 
     this.pushMatrix(); // BACK (WHITE)
-        this.defaultApp.setTexture(this.sky1_back);
+        this.defaultApp.setTexture(this.sky.back);
         this.defaultApp.apply();
         this.translate(50,0,0);
         this.rotate(-90*degToRad,0,1,0);
@@ -341,7 +354,7 @@ Scene.prototype.displaySkybox = function () {
     this.popMatrix();
 
     this.pushMatrix(); // RIGHT (SCORE)
-        this.defaultApp.setTexture(this.sky1_right);
+        this.defaultApp.setTexture(this.sky.right);
         this.defaultApp.apply();
         this.rotate(90*degToRad,0,1,0);
         this.translate(50,0,0);
@@ -349,9 +362,8 @@ Scene.prototype.displaySkybox = function () {
         this.boxSide.display();
     this.popMatrix();
 
-
     this.pushMatrix(); // FRONT (BLACK)
-        this.defaultApp.setTexture(this.sky1_front);
+        this.defaultApp.setTexture(this.sky.front);
         this.defaultApp.apply();
         this.rotate(180*degToRad,0,1,0);
         this.translate(50,0,0);
@@ -360,7 +372,7 @@ Scene.prototype.displaySkybox = function () {
     this.popMatrix();
 
     this.pushMatrix(); // LEFT (TIMER)
-        this.defaultApp.setTexture(this.sky1_left);
+        this.defaultApp.setTexture(this.sky.left);
         this.defaultApp.apply();
         this.rotate(-90*degToRad,0,1,0);
         this.translate(50,0,0);
@@ -369,7 +381,7 @@ Scene.prototype.displaySkybox = function () {
     this.popMatrix();
 
     this.pushMatrix(); // TOP
-        this.defaultApp.setTexture(this.sky1_top);
+        this.defaultApp.setTexture(this.sky.top);
         this.defaultApp.apply();
         this.rotate(-90*degToRad,0,0,1);
         this.translate(-50,0,0);
@@ -378,7 +390,7 @@ Scene.prototype.displaySkybox = function () {
     this.popMatrix();
 
     this.pushMatrix(); // BOTTOM
-        this.defaultApp.setTexture(this.sky1_bottom);
+        this.defaultApp.setTexture(this.sky.bottom);
         this.defaultApp.apply();
         this.rotate(90*degToRad,0,0,1);
         this.translate(-50,0,0);
@@ -637,6 +649,8 @@ Scene.prototype.alt_skin = function () {
 
         this.timer.setMatWOOD(this.matWOODDARK);
         this.timer.setFont(this.fontWHITE);
+
+        this.sky=this.sky2;
     }
     else
     {
@@ -648,6 +662,8 @@ Scene.prototype.alt_skin = function () {
 
         this.timer.setMatWOOD(this.matWOODBRIGHT);
         this.timer.setFont(this.fontRED);
+
+        this.sky=this.sky1;
     }
 };
 

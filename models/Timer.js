@@ -19,7 +19,8 @@ function Timer(scene, matWOOD, fontText) {
 	this.bottom = new MyRectangle(scene,-3,1.75,3,-1.75);
 	this.bottom.updateTex(1,1);
 
-	this.plane = new MyPlane(scene,5);
+	this.rec = new MyRectangle(scene, -0.5, 1, 0.5, -1);
+	this.rec.updateTex(1,2);
 
 	this.appearance = scene.defaultApp;
 	this.fontText = fontText;
@@ -168,40 +169,35 @@ Timer.prototype.displayTime = function () {
 		this.scene.activeShader.setUniformsValues({'charCoords': [decM,5]});
 		this.scene.pushMatrix();
 			this.scene.translate(-2,0,0);
-			this.scene.rotate(-90*degToRad,0,1,0);
-			this.scene.scale(0.75,1,0.5);
-			this.plane.display();
+			this.scene.rotate(-90*degToRad,1,0,0);
+			this.rec.display();
 		this.scene.popMatrix();
 
 		this.scene.activeShader.setUniformsValues({'charCoords': [uniM,5]});
 		this.scene.pushMatrix();
 			this.scene.translate(-1,0,0);
-			this.scene.rotate(-90*degToRad,0,1,0);
-			this.scene.scale(0.75,1,0.5);
-			this.plane.display();
+			this.scene.rotate(-90*degToRad,1,0,0);
+			this.rec.display();
 		this.scene.popMatrix();
 
 		this.scene.activeShader.setUniformsValues({'charCoords': [5,3]});
 		this.scene.pushMatrix();
-			this.scene.rotate(-90*degToRad,0,1,0);
-			this.scene.scale(0.75,1,0.5);
-			this.plane.display();
+			this.scene.rotate(-90*degToRad,1,0,0);
+			this.rec.display();
 		this.scene.popMatrix();
 
 		this.scene.activeShader.setUniformsValues({'charCoords': [decS,5]});
 		this.scene.pushMatrix();
 			this.scene.translate(1,0,0);
-			this.scene.rotate(-90*degToRad,0,1,0);
-			this.scene.scale(0.75,1,0.5);
-			this.plane.display();
+			this.scene.rotate(-90*degToRad,1,0,0);
+			this.rec.display();
 		this.scene.popMatrix();
 
 		this.scene.activeShader.setUniformsValues({'charCoords': [uniS,5]});
 		this.scene.pushMatrix();
 			this.scene.translate(2,0,0);
-			this.scene.rotate(-90*degToRad,0,1,0);
-			this.scene.scale(0.75,1,0.5);
-			this.plane.display();
+			this.scene.rotate(-90*degToRad,1,0,0);
+			this.rec.display();
 		this.scene.popMatrix();
 
 		this.scene.setActiveShaderSimple(this.scene.defaultShader);
@@ -219,40 +215,35 @@ Timer.prototype.displayPaused = function () {
 		this.scene.activeShader.setUniformsValues({'charCoords': [5,1]});
 		this.scene.pushMatrix();
 			this.scene.translate(-2,0,0);
-			this.scene.rotate(-90*degToRad,0,1,0);
-			this.scene.scale(0.75,1,0.5);
-			this.plane.display();
+			this.scene.rotate(-90*degToRad,1,0,0);
+			this.rec.display();
 		this.scene.popMatrix();
 
 		this.scene.activeShader.setUniformsValues({'charCoords': [0,0]});
 		this.scene.pushMatrix();
 			this.scene.translate(-1,0,0);
-			this.scene.rotate(-90*degToRad,0,1,0);
-			this.scene.scale(0.75,1,0.5);
-			this.plane.display();
+			this.scene.rotate(-90*degToRad,1,0,0);
+			this.rec.display();
 		this.scene.popMatrix();
 
 		this.scene.activeShader.setUniformsValues({'charCoords': [0,2]});
 		this.scene.pushMatrix();
-			this.scene.rotate(-90*degToRad,0,1,0);
-			this.scene.scale(0.75,1,0.5);
-			this.plane.display();
+			this.scene.rotate(-90*degToRad,1,0,0);
+			this.rec.display();
 		this.scene.popMatrix();
 
 		this.scene.activeShader.setUniformsValues({'charCoords': [8,1]});
 		this.scene.pushMatrix();
 			this.scene.translate(1,0,0);
-			this.scene.rotate(-90*degToRad,0,1,0);
-			this.scene.scale(0.75,1,0.5);
-			this.plane.display();
+			this.scene.rotate(-90*degToRad,1,0,0);
+			this.rec.display();
 		this.scene.popMatrix();
 
 		this.scene.activeShader.setUniformsValues({'charCoords': [4,0]});
 		this.scene.pushMatrix();
 			this.scene.translate(2,0,0);
-			this.scene.rotate(-90*degToRad,0,1,0);
-			this.scene.scale(0.75,1,0.5);
-			this.plane.display();
+			this.scene.rotate(-90*degToRad,1,0,0);
+			this.rec.display();
 		this.scene.popMatrix();
 
 		this.scene.setActiveShaderSimple(this.scene.defaultShader);
