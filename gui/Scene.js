@@ -109,6 +109,11 @@ Scene.prototype.init = function (application) {
     this.boxSide = new MyRectangle(this,-50.1,50.1,50.1,-50.1);
     this.boxSide.updateTex(100.2,100.2);
 
+    //Table and Benches
+    this.table = new Table(this, this.matWOODBRIGHT);
+    this.bench_one = new Bench(this, this.matWOODBRIGHT);
+    this.bench_two = new Bench(this, this.matWOODBRIGHT);
+
     this.player = 'w';
 };
 
@@ -272,17 +277,29 @@ Scene.prototype.display = function () {
 
     this.board.display();
     this.pushMatrix();
-        this.translate(0,1,-7);
+        this.translate(0,1,-8);
         this.scoreboard.display();
     this.popMatrix();
 
     this.pushMatrix();
-        this.translate(0,1,7);
+        this.translate(0,1,8);
         this.rotate(180*degToRad,0,1,0);
         this.timer.display();
     this.popMatrix();
 
     this.displayPieces();
+
+    this.table.display();
+
+    this.pushMatrix();
+        this.translate(-15, -15, 0);
+        this.bench_one.display();
+    this.popMatrix();
+
+    this.pushMatrix();
+        this.translate(15, -15, 0);
+        this.bench_two.display();
+    this.popMatrix();
 };
 
 Scene.prototype.buildState = function () {

@@ -11,7 +11,7 @@ dir_shaders='../shaders/';
 
 files_lib=[dir_lib+'CGF.js'];
 files_gui=[dir_gui+'Scene.js', dir_gui+'MyInterface.js',];
-files_models=[dir_models+'Piece.js', dir_models+'Board.js',dir_models+'Scoreboard.js',dir_models+'Timer.js'];
+files_models=[dir_models+'Piece.js', dir_models+'Board.js',dir_models+'Scoreboard.js',dir_models+'Timer.js',dir_models+'Table.js',dir_models+'Bench.js'];
 //files_primitives=[dir_primitives+'MyRectangle.js', dir_primitives+'MyCylinder.js', dir_primitives+'MyTriangle.js', dir_primitives+'MySphere.js', dir_primitives+'MyCircle.js', dir_primitives+'Patch.js', dir_primitives+'Plane.js', dir_primitives+'Terrain.js'];
 files_primitives=[dir_primitives+'MyRectangle.js', dir_primitives+'MyCylinder.js', dir_primitives+'MyTriangle.js', dir_primitives+'MySphere.js', dir_primitives+'MyCircle.js', dir_primitives+'MyPatch.js', dir_primitives+'MyPlane.js', dir_primitives+'MyTerrain.js'];
 

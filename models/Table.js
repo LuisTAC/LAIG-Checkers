@@ -12,10 +12,10 @@ function Table(scene, app) {
 
  	// Table's parts from other primitives
  	this.table_feet = new MyCylinder(scene, 10, 2, 2, 10, 100);
- 	this.table_top_bottom = new MyRectangle(scene, -7.5, 7.5, 7.5, -7.5);
+ 	this.table_top_bottom = new MyRectangle(scene, -9, 9, 9, -9);
  	this.table_top_bottom.updateTex(1, 1);
 
- 	this.table_sides = new MyRectangle(scene, -7.5, 1, 7.5, -1);
+ 	this.table_sides = new MyRectangle(scene, -9, 1, 9, -1);
  	this.table_sides.updateTex(1, 1);
 
  	this.table_bottom = new MyCylinder(scene, 2, 2, 3, 10, 100);
@@ -49,27 +49,27 @@ Table.prototype.display = function() {
 	this.scene.popMatrix();
 
 	this.scene.pushMatrix();
-		this.scene.translate(0, -2 ,7.5);
+		this.scene.translate(0, -2 ,9);
 		this.app.apply();
 		this.table_sides.display();
 	this.scene.popMatrix();
 
 	this.scene.pushMatrix();
-		this.scene.translate(0, -2, -7.5);
+		this.scene.translate(0, -2, -9);
 		this.scene.rotate(180*degToRad, 0, 1, 0);
 		this.app.apply();
 		this.table_sides.display();
 	this.scene.popMatrix();
 
 	this.scene.pushMatrix();
-		this.scene.translate(7.5, -2, 0);
+		this.scene.translate(9, -2, 0);
 		this.scene.rotate(90*degToRad, 0, 1, 0);
 		this.app.apply();
 		this.table_sides.display();
 	this.scene.popMatrix();
 
 	this.scene.pushMatrix();
-		this.scene.translate(-7.5, -2, 0);
+		this.scene.translate(-9, -2, 0);
 		this.scene.rotate(-90*degToRad, 0, 1, 0);
 		this.app.apply();
 		this.table_sides.display();
