@@ -28,7 +28,7 @@ Table.prototype = Object.create(CGFobject.prototype);
 Table.prototype.constructor = Table;
 
 Table.prototype.setAppearance = function(app) {
-	this.appearance = app; 
+	this.app = app; 
 };
 
 Table.prototype.display = function() {

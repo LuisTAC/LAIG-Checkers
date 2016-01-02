@@ -115,7 +115,7 @@ Scene.prototype.init = function (application) {
     this.bench_two = new Bench(this, this.matWOODBRIGHT);
     //Floor
     this.floor = new MyRectangle(this, -50, 50, 50, -50);
-    this.floor.updateTex(100, 100);
+    this.floor.updateTex(5, 5);
 
     this.player = 'w';
 };
@@ -192,18 +192,14 @@ Scene.prototype.initMaterials = function () {
     this.matWHITE.setSpecular(0.2, 0.2, 0.2, 1.0);
     this.matWHITE.setShininess(2.0);
 
-    this.matWOOD = new CGFappearance(this);
-    this.matWOOD.setAmbient(0.59, 0.44, 0.2, 1);
-    this.matWOOD.setDiffuse(0.59, 0.44, 0.2, 1);
-    this.matWOOD.setSpecular(0.15, 0.11, 0.05, 1);
-    this.matWOOD.setShininess(10.0);
-
     this.matWOODBRIGHT = new CGFappearance(this);
     this.matWOODBRIGHT.setAmbient(0.5, 0.5, 0.5, 1.0);
     this.matWOODBRIGHT.setDiffuse(0.5, 0.5, 0.5, 1.0);
     this.matWOODBRIGHT.setSpecular(0.2, 0.2, 0.2, 1.0);
     this.matWOODBRIGHT.setShininess(2.0);
     this.matWOODBRIGHT.setTexture(new CGFtexture(this, dir_resources+"wood.jpg"));
+
+    this.matWOOD=this.matWOODBRIGHT;
 
     this.matWOODDARK = new CGFappearance(this);
     this.matWOODDARK.setAmbient(0.16, 0.04, 0.02, 1);
@@ -307,6 +303,7 @@ Scene.prototype.display = function () {
     this.pushMatrix();
         this.translate(0, -15, 0);
         this.rotate(-90*degToRad, 1, 0, 0);
+        this.matWOOD.apply();
         this.floor.display();
     this.popMatrix();
 };
@@ -677,6 +674,11 @@ Scene.prototype.alt_skin = function () {
         this.timer.setFont(this.fontWHITE);
 
         this.sky=this.sky2;
+
+        this.table.setAppearance(this.matWOODDARK);
+        this.bench_one.setAppearance(this.matWOODDARK);
+        this.bench_two.setAppearance(this.matWOODDARK);
+        this.matWOOD=this.matWOODDARK;
     }
     else
     {
@@ -690,6 +692,11 @@ Scene.prototype.alt_skin = function () {
         this.timer.setFont(this.fontRED);
 
         this.sky=this.sky1;
+
+        this.table.setAppearance(this.matWOODBRIGHT);
+        this.bench_one.setAppearance(this.matWOODBRIGHT);
+        this.bench_two.setAppearance(this.matWOODBRIGHT);
+        this.matWOOD=this.matWOODBRIGHT;
     }
 };
 
