@@ -371,7 +371,7 @@ Scene.prototype.displaySkybox = function () {
     this.pushMatrix(); // BACK (WHITE)
         this.defaultApp.setTexture(this.sky.back);
         this.defaultApp.apply();
-        this.translate(50,0,0);
+        this.translate(50,-10,0);
         this.rotate(-90*degToRad,0,1,0);
         this.boxSide.display();
     this.popMatrix();
@@ -380,7 +380,7 @@ Scene.prototype.displaySkybox = function () {
         this.defaultApp.setTexture(this.sky.right);
         this.defaultApp.apply();
         this.rotate(90*degToRad,0,1,0);
-        this.translate(50,0,0);
+        this.translate(50,-10,0);
         this.rotate(-90*degToRad,0,1,0);
         this.boxSide.display();
     this.popMatrix();
@@ -389,7 +389,7 @@ Scene.prototype.displaySkybox = function () {
         this.defaultApp.setTexture(this.sky.front);
         this.defaultApp.apply();
         this.rotate(180*degToRad,0,1,0);
-        this.translate(50,0,0);
+        this.translate(50,-10,0);
         this.rotate(-90*degToRad,0,1,0);
         this.boxSide.display();
     this.popMatrix();
@@ -398,7 +398,7 @@ Scene.prototype.displaySkybox = function () {
         this.defaultApp.setTexture(this.sky.left);
         this.defaultApp.apply();
         this.rotate(-90*degToRad,0,1,0);
-        this.translate(50,0,0);
+        this.translate(50,-10,0);
         this.rotate(-90*degToRad,0,1,0);
         this.boxSide.display();
     this.popMatrix();
@@ -406,6 +406,7 @@ Scene.prototype.displaySkybox = function () {
     this.pushMatrix(); // TOP
         this.defaultApp.setTexture(this.sky.top);
         this.defaultApp.apply();
+        this.translate(0,-10,0);
         this.rotate(-90*degToRad,0,0,1);
         this.translate(-50,0,0);
         this.rotate(90*degToRad,0,1,0);
@@ -415,6 +416,7 @@ Scene.prototype.displaySkybox = function () {
     this.pushMatrix(); // BOTTOM
         this.defaultApp.setTexture(this.sky.bottom);
         this.defaultApp.apply();
+        this.translate(0,-10,0);
         this.rotate(90*degToRad,0,0,1);
         this.translate(-50,0,0);
         this.rotate(90*degToRad,0,1,0);
