@@ -159,6 +159,7 @@ Timer.prototype.displayTime = function () {
 		this.appearance.apply();
 
 		var decM = Math.floor(this.minutes/10);
+		if(decM>=10) decM%=10;
 		var uniM = this.minutes%10;
 
 		var decS = Math.floor(this.seconds/10);

@@ -113,6 +113,9 @@ Scene.prototype.init = function (application) {
     this.table = new Table(this, this.matWOODBRIGHT);
     this.bench_one = new Bench(this, this.matWOODBRIGHT);
     this.bench_two = new Bench(this, this.matWOODBRIGHT);
+    //Floor
+    this.floor = new MyRectangle(this, -50, 50, 50, -50);
+    this.floor.updateTex(100, 100);
 
     this.player = 'w';
 };
@@ -299,6 +302,12 @@ Scene.prototype.display = function () {
     this.pushMatrix();
         this.translate(15, -15, 0);
         this.bench_two.display();
+    this.popMatrix();
+
+    this.pushMatrix();
+        this.translate(0, -15, 0);
+        this.rotate(-90*degToRad, 1, 0, 0);
+        this.floor.display();
     this.popMatrix();
 };
 
