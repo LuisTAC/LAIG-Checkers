@@ -31,8 +31,7 @@ main=function()
 
     app.setScene(myScene);
     app.setInterface(myInterface);
-
-    myInterface.setActiveCamera(myScene.camera);
+    myScene.interface=myInterface;
     
     // start
     app.run();

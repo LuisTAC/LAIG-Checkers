@@ -18,55 +18,11 @@ MyInterface.prototype.init = function(application) {
 	// call CGFinterface init
 	CGFinterface.prototype.init.call(this, application);
 	
-	
 	// init GUI. For more information on the methods, check:
 	//  http://workshop.chromeexperiments.com/examples/gui
-	
 	this.gui = new dat.GUI();
-
-	// add a button:
-	// the first parameter is the object that is being controlled (in this case the scene)
-	// the identifier 'doSomething' must be a function declared as part of that object (i.e. a member of the scene class)
-	// e.g. LightingScene.prototype.doSomething = function () { console.log("Doing something..."); }; 
-
-	var cameras=this.gui.addFolder("Cameras");
-	//cameras.open();
-
-	cameras.add(this.scene, 'cameraTopWhite');
-	cameras.add(this.scene, 'cameraTopBlack');
-	cameras.add(this.scene, 'cameraWhite');
-	cameras.add(this.scene, 'cameraBlack');
-	cameras.add(this.scene, 'cameraScore');
-	cameras.add(this.scene, 'cameraTimer');
-
-	var film=this.gui.addFolder("Film");
-	film.add(this.scene, 'film_delay', 1, 5);
-	film.add(this.scene, 'test_film');
-
-	this.gui.add(this.scene, 'undo');
-	this.gui.add(this.scene, 'alt_skin');
-
-	// add a group of controls (and open/expand by defult)
-	
-	/*
-	var lights=this.gui.addFolder("Luzes");
-	lights.open();
-
-	// add two check boxes to the group. The identifiers must be members variables of the scene initialized in scene.init as boolean
-	// e.g. this.option1=true; this.option2=false;
-	
-	lights.add(this.scene, 'luz0');
-	lights.add(this.scene, 'luz1');
-	lights.add(this.scene, 'luz2');
-	lights.add(this.scene, 'luz3');
-	
-	// add a slider
-	// must be a numeric variable of the scene, initialized in scene.init e.g.
-	// this.speed=3;
-	// min and max values can be specified as parameters
-	
-	this.gui.add(this.scene, 'speed', -5, 5);
-	*/
+	this.gui.add(this.scene,"freeCam").name("Free Camera");
+	dat.GUI.toggleHide()
 
 	return true;
 };

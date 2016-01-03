@@ -117,7 +117,38 @@ Scene.prototype.init = function (application) {
     this.floor.updateTex(5, 5);
 
     this.player = 'w';
+
+    var controlpoints = [   // U = 0
+                        [ // V = 0..2;
+                            [-0.45, -0.2, 0, 1],
+                            [-0.5, 0, 0, 1],
+                            [-0.45, 0.2, 0, 1]
+                            
+                        ],
+                        // U = 1
+                        [ // V = 0..2
+                            [0, -0.25, 0, 1],
+                            [0, 0, 0, 1],
+                            [0, 0.25, 0, 1]
+                        ],
+                        // U = 2
+                        [ // V = 0..2
+                            [0.45, -0.2, 0, 1],
+                            [0.5, 0, 0, 1],
+                            [0.45, 0.2, 0, 1]
+                        ]
+    ];
+    this.button_WH = new MyPatch(this, 2, 20, 2, 20, controlpoints);
+    this.button_BL = new MyPatch(this, 2, 20, 2, 20, controlpoints);
+    this.button_TOP_WH = new MyPatch(this, 2, 20, 2, 20, controlpoints);
+    this.button_TOP_BL = new MyPatch(this, 2, 20, 2, 20, controlpoints);
+    this.button_Timer = new MyPatch(this, 2, 20, 2, 20, controlpoints);
+    this.button_Score = new MyPatch(this, 2, 20, 2, 20, controlpoints);
+    this.button_Undo = new MyPatch(this, 2, 20, 2, 20, controlpoints);
+    this.button_Film = new MyPatch(this, 2, 20, 2, 20, controlpoints);
+    this.button_Skins = new MyPatch(this, 2, 20, 2, 20, controlpoints);
 };
+
 
 Scene.prototype.initLights = function () {
 
@@ -162,7 +193,7 @@ Scene.prototype.initCameras = function () {
 Scene.prototype.initMaterials = function () {
 
     this.defaultApp = new CGFappearance(this);
-    this.defaultApp.setAmbient(0.3, 0.3, 0.3, 1);
+    this.defaultApp.setAmbient(0.9, 0.9, 0.9, 1);
     this.defaultApp.setDiffuse(0.7, 0.7, 0.7, 1);
     this.defaultApp.setSpecular(0.0, 0.0, 0.0, 1);  
     this.defaultApp.setShininess(120);
@@ -234,6 +265,18 @@ Scene.prototype.initMaterials = function () {
     };
 
     this.sky=this.sky1;
+
+    //BUTTON TEXTURES
+
+    this.tex_cam_WH = new CGFtexture(this, dir_resources+"button_cam_WH.png");
+    this.tex_cam_BL = new CGFtexture(this, dir_resources+"button_cam_BL.png");
+    this.tex_cam_TOP_WH = new CGFtexture(this, dir_resources+"button_cam_TOP_WH.png");
+    this.tex_cam_TOP_BL = new CGFtexture(this, dir_resources+"button_cam_TOP_BL.png");
+    this.tex_cam_Timer = new CGFtexture(this, dir_resources+"button_cam_Timer.png");
+    this.tex_cam_Score = new CGFtexture(this, dir_resources+"button_cam_Score.png");
+    this.tex_film = new CGFtexture(this, dir_resources+"button_film.png");
+    this.tex_undo = new CGFtexture(this, dir_resources+"button_undo.png");
+    this.tex_skins = new CGFtexture(this, dir_resources+"button_skins.png");
 };
 
 Scene.prototype.initPicking = function () {
@@ -262,6 +305,8 @@ Scene.prototype.display = function () {
 	this.updateProjectionMatrix();
     this.loadIdentity();
 
+    this.displayInterface();
+    
 	// Apply transformations corresponding to the camera position relative to the origin
 	this.applyViewMatrix();
 	
@@ -303,6 +348,149 @@ Scene.prototype.display = function () {
         this.translate(0, -15, 0);
         this.rotate(-90*degToRad, 1, 0, 0);
         this.floor.display();
+    this.popMatrix();
+};
+
+Scene.prototype.displayInterface = function () {
+
+    this.pushMatrix();
+        this.translate(-3.5,-1.7,-10);
+        this.registerForPick(96, this.button_Timer);
+        this.defaultApp.setTexture(this.tex_cam_Timer);
+        this.defaultApp.apply();
+        this.button_Timer.display();
+        this.defaultApp.setTexture(null);
+    this.popMatrix();
+
+    this.pushMatrix();
+        this.translate(3.5,-1.7,-10);
+        this.registerForPick(97, this.button_Score);
+        this.defaultApp.setTexture(this.tex_cam_Score);
+        this.defaultApp.apply();
+        this.button_Score.display();
+        this.defaultApp.setTexture(null);
+    this.popMatrix();
+
+    this.pushMatrix();
+        this.translate(-1.8,-1.7,-10);
+        this.registerForPick(94, this.button_TOP_WH);
+        this.defaultApp.setTexture(this.tex_cam_TOP_WH);
+        this.defaultApp.apply();
+        this.button_TOP_WH.display();
+        this.defaultApp.setTexture(null);
+    this.popMatrix();
+
+    this.pushMatrix();
+        this.translate(-0.6,-1.7,-10);
+        this.registerForPick(92, this.button_WH);
+        this.defaultApp.setTexture(this.tex_cam_WH);
+        this.defaultApp.apply();
+        this.button_WH.display();
+        this.defaultApp.setTexture(null);
+    this.popMatrix();
+
+    this.pushMatrix();
+        this.translate(0.6,-1.7,-10);
+        this.registerForPick(93, this.button_BL);
+        this.defaultApp.setTexture(this.tex_cam_BL);
+        this.defaultApp.apply();
+        this.button_BL.display();
+        this.defaultApp.setTexture(null);
+    this.popMatrix();
+
+    this.pushMatrix();
+        this.translate(1.8,-1.7,-10);
+        this.registerForPick(95, this.button_TOP_BL);
+        this.defaultApp.setTexture(this.tex_cam_TOP_BL);
+        this.defaultApp.apply();
+        this.button_TOP_BL.display();
+        this.defaultApp.setTexture(null);
+    this.popMatrix();
+
+        this.pushMatrix();
+        this.translate(-1.2,1.7,-10);
+        this.registerForPick(90, this.button_Undo);
+        this.defaultApp.setTexture(this.tex_undo);
+        this.defaultApp.apply();
+        this.button_Undo.display();
+        this.defaultApp.setTexture(null);
+    this.popMatrix();
+
+    this.pushMatrix();
+        this.translate(0,1.7,-10);
+        this.registerForPick(89, this.button_Skins);
+        this.defaultApp.setTexture(this.tex_skins);
+        this.defaultApp.apply();
+        this.button_Skins.display();
+        this.defaultApp.setTexture(null);
+    this.popMatrix();
+
+    this.pushMatrix();
+        this.translate(1.2,1.7,-10);
+        this.registerForPick(91, this.button_Film);
+        this.defaultApp.setTexture(this.tex_film);
+        this.defaultApp.apply();
+        this.button_Film.display();
+        this.defaultApp.setTexture(null);
+    this.popMatrix();
+
+};
+
+Scene.prototype.displaySkybox = function () {
+
+    this.pushMatrix(); // BACK (WHITE)
+        this.defaultApp.setTexture(this.sky.back);
+        this.defaultApp.apply();
+        this.translate(50,-10,0);
+        this.rotate(-90*degToRad,0,1,0);
+        this.boxSide.display();
+    this.popMatrix();
+
+    this.pushMatrix(); // RIGHT (SCORE)
+        this.defaultApp.setTexture(this.sky.right);
+        this.defaultApp.apply();
+        this.rotate(90*degToRad,0,1,0);
+        this.translate(50,-10,0);
+        this.rotate(-90*degToRad,0,1,0);
+        this.boxSide.display();
+    this.popMatrix();
+
+    this.pushMatrix(); // FRONT (BLACK)
+        this.defaultApp.setTexture(this.sky.front);
+        this.defaultApp.apply();
+        this.rotate(180*degToRad,0,1,0);
+        this.translate(50,-10,0);
+        this.rotate(-90*degToRad,0,1,0);
+        this.boxSide.display();
+    this.popMatrix();
+
+    this.pushMatrix(); // LEFT (TIMER)
+        this.defaultApp.setTexture(this.sky.left);
+        this.defaultApp.apply();
+        this.rotate(-90*degToRad,0,1,0);
+        this.translate(50,-10,0);
+        this.rotate(-90*degToRad,0,1,0);
+        this.boxSide.display();
+    this.popMatrix();
+
+    this.pushMatrix(); // TOP
+        this.defaultApp.setTexture(this.sky.top);
+        this.defaultApp.apply();
+        this.translate(0,-10,0);
+        this.rotate(-90*degToRad,0,0,1);
+        this.translate(-50,0,0);
+        this.rotate(90*degToRad,0,1,0);
+        this.boxSide.display();
+    this.popMatrix();
+
+    this.pushMatrix(); // BOTTOM
+        this.defaultApp.setTexture(this.sky.bottom);
+        this.defaultApp.apply();
+        this.translate(0,-10,0);
+        this.rotate(90*degToRad,0,0,1);
+        this.translate(-50,0,0);
+        this.rotate(90*degToRad,0,1,0);
+        this.boxSide.display();
     this.popMatrix();
 };
 
@@ -363,64 +551,6 @@ Scene.prototype.readState = function (state) {
         return true;
     }
 };
-
-Scene.prototype.displaySkybox = function () {
-
-    this.pushMatrix(); // BACK (WHITE)
-        this.defaultApp.setTexture(this.sky.back);
-        this.defaultApp.apply();
-        this.translate(50,-10,0);
-        this.rotate(-90*degToRad,0,1,0);
-        this.boxSide.display();
-    this.popMatrix();
-
-    this.pushMatrix(); // RIGHT (SCORE)
-        this.defaultApp.setTexture(this.sky.right);
-        this.defaultApp.apply();
-        this.rotate(90*degToRad,0,1,0);
-        this.translate(50,-10,0);
-        this.rotate(-90*degToRad,0,1,0);
-        this.boxSide.display();
-    this.popMatrix();
-
-    this.pushMatrix(); // FRONT (BLACK)
-        this.defaultApp.setTexture(this.sky.front);
-        this.defaultApp.apply();
-        this.rotate(180*degToRad,0,1,0);
-        this.translate(50,-10,0);
-        this.rotate(-90*degToRad,0,1,0);
-        this.boxSide.display();
-    this.popMatrix();
-
-    this.pushMatrix(); // LEFT (TIMER)
-        this.defaultApp.setTexture(this.sky.left);
-        this.defaultApp.apply();
-        this.rotate(-90*degToRad,0,1,0);
-        this.translate(50,-10,0);
-        this.rotate(-90*degToRad,0,1,0);
-        this.boxSide.display();
-    this.popMatrix();
-
-    this.pushMatrix(); // TOP
-        this.defaultApp.setTexture(this.sky.top);
-        this.defaultApp.apply();
-        this.translate(0,-10,0);
-        this.rotate(-90*degToRad,0,0,1);
-        this.translate(-50,0,0);
-        this.rotate(90*degToRad,0,1,0);
-        this.boxSide.display();
-    this.popMatrix();
-
-    this.pushMatrix(); // BOTTOM
-        this.defaultApp.setTexture(this.sky.bottom);
-        this.defaultApp.apply();
-        this.translate(0,-10,0);
-        this.rotate(90*degToRad,0,0,1);
-        this.translate(-50,0,0);
-        this.rotate(90*degToRad,0,1,0);
-        this.boxSide.display();
-    this.popMatrix();
-}
 
 Scene.prototype.displayPieces = function () {
     
@@ -547,7 +677,7 @@ Scene.prototype.cameraTopWhite = function() {
 
     if(!this.cameraTransition) {
         this.cameraOrigin=[this.camera.position[0], this.camera.position[1], this.camera.position[2]];
-        this.cameraDestination = [0.01,27.5,0];
+        this.cameraDestination = [0.01,35,0];
         if(!arraysEqual(this.cameraDestination, this.cameraOrigin)) this.calcTransition();
     }
 };
@@ -556,7 +686,7 @@ Scene.prototype.cameraTopBlack = function() {
 
     if(!this.cameraTransition) {
         this.cameraOrigin=[this.camera.position[0], this.camera.position[1], this.camera.position[2]];
-        this.cameraDestination = [-0.01,27.5,0];
+        this.cameraDestination = [-0.01,35,0];
         if(!arraysEqual(this.cameraDestination, this.cameraOrigin)) this.calcTransition();
     }
 };
@@ -597,6 +727,10 @@ Scene.prototype.cameraTimer = function() {
     }
 };
 
+Scene.prototype.freeCam = function() {
+    this.interface.setActiveCamera(this.camera);
+};
+
 Scene.prototype.calcTransition = function() {
     this.transitionVec = [this.cameraDestination[0]-this.cameraOrigin[0],
             this.cameraDestination[1]-this.cameraOrigin[1],
@@ -618,7 +752,7 @@ Scene.prototype.undo = function() {
 };
 
 //Film
-Scene.prototype.test_film = function() {
+Scene.prototype.start_film = function() {
 
     if(this.states.length>1) {
         this.film_playing = true;
@@ -651,6 +785,48 @@ Scene.prototype.logPicking = function () {
                         console.log("\tCell [" + ((customId-1)%8+1) + "," + (Math.floor((customId-1)/8)+1) + "] picked"); //
                         this.pickedCell=obj;
                         this.sendRequest([this.pickedPiece.posX, this.pickedPiece.posY], [((customId-1)%8+1), (Math.floor((customId-1)/8)+1)]);
+                    }
+                    if(obj instanceof MyPatch && customId > 88)
+                    {
+                        switch(customId)
+                        {
+                            case 89: //alt_skin
+                                console.log("\tButton 'Change Skins' picked");
+                                this.alt_skin();
+                            break;
+                            case 90: //undo
+                                console.log("\tButton 'Undo Move' picked");
+                                this.undo();
+                            break;
+                            case 91: //film
+                                console.log("\tButton 'Start Film' picked");
+                                this.start_film();
+                            break;
+                            case 92:
+                                console.log("\tButton 'Camera WH' picked");
+                                this.cameraWhite();
+                            break;
+                            case 93:
+                                console.log("\tButton 'Camera BL' picked");
+                                this.cameraBlack();
+                            break;
+                            case 94:
+                                console.log("\tButton 'Camera TOP WH' picked");
+                                this.cameraTopWhite();
+                            break;
+                            case 95:
+                                console.log("\tButton 'Camera TOP BL' picked");
+                                this.cameraTopBlack();
+                            break;
+                            case 96:
+                                console.log("\tButton 'Camera Timer' picked");
+                                this.cameraTimer();
+                            break;
+                            case 97:
+                                console.log("\tButton 'Camera Score' picked");
+                                this.cameraScore();
+                            break;
+                        }
                     }
                 }
             }
