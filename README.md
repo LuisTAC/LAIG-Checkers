@@ -9,7 +9,7 @@ Checkers board game using webgl through a custom library WebCGF (v0.18)
 1. Open a console window in the project folder.
 
 2. Run the server through the command 'java logic.Server'
-3. Run Mongoose in the project folder and open the "gui" folder.
+3. Run [Mongoose](https://www.cesanta.com/products) in the project folder and open the "gui" folder.
 
 ### Documentation
 
