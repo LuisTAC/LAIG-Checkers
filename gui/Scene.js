@@ -111,8 +111,7 @@ Scene.prototype.init = function (application) {
 
     //Table and Benches
     this.table = new Table(this, this.matWOODBRIGHT);
-    this.bench_one = new Bench(this, this.matWOODBRIGHT);
-    this.bench_two = new Bench(this, this.matWOODBRIGHT);
+    this.bench = new Bench(this, this.matWOODBRIGHT);
     //Floor
     this.floor = new MyRectangle(this, -50, 50, 50, -50);
     this.floor.updateTex(5, 5);
@@ -154,8 +153,8 @@ Scene.prototype.updateLights = function() {
 
 Scene.prototype.initCameras = function () {
     
-    this.camera = new CGFcamera(0.4, 0.01, 500, vec3.fromValues(20, 10, 0), vec3.fromValues(0, 0, 0));
-    this.cameraDestination = [20,10,0];
+    this.camera = new CGFcamera(0.4, 0.01, 500, vec3.fromValues(25, 10, 0), vec3.fromValues(0, 0, 0));
+    this.cameraDestination = [25,10,0];
     this.cameraTransition = false;
     this.camTransTime = 1000;
 };
@@ -266,7 +265,7 @@ Scene.prototype.display = function () {
 	// Apply transformations corresponding to the camera position relative to the origin
 	this.applyViewMatrix();
 	
-    this.axis.display();
+    //this.axis.display();
 
 	// ---- END Background, camera and axis setup
 
@@ -287,23 +286,22 @@ Scene.prototype.display = function () {
     this.popMatrix();
 
     this.displayPieces();
-
     this.table.display();
+    this.matWOOD.apply();
 
     this.pushMatrix();
-        this.translate(-15, -15, 0);
-        this.bench_one.display();
+        this.translate(-15, -10, 0);
+        this.bench.display();
     this.popMatrix();
-
+    
     this.pushMatrix();
-        this.translate(15, -15, 0);
-        this.bench_two.display();
+        this.translate(15, -10, 0);
+        this.bench.display();
     this.popMatrix();
 
     this.pushMatrix();
         this.translate(0, -15, 0);
         this.rotate(-90*degToRad, 1, 0, 0);
-        this.matWOOD.apply();
         this.floor.display();
     this.popMatrix();
 };
@@ -567,7 +565,7 @@ Scene.prototype.cameraWhite = function() {
 
     if(!this.cameraTransition) {
         this.cameraOrigin=[this.camera.position[0], this.camera.position[1], this.camera.position[2]];
-        this.cameraDestination = [20,10,0];
+        this.cameraDestination = [25,10,0];
         if(!arraysEqual(this.cameraDestination, this.cameraOrigin)) this.calcTransition();
     }
 };
@@ -576,7 +574,7 @@ Scene.prototype.cameraBlack = function() {
 
     if(!this.cameraTransition) {
         this.cameraOrigin=[this.camera.position[0], this.camera.position[1], this.camera.position[2]];
-        this.cameraDestination = [-20,10,0];
+        this.cameraDestination = [-25,10,0];
         if(!arraysEqual(this.cameraDestination, this.cameraOrigin)) this.calcTransition();
     }
 };
@@ -678,8 +676,7 @@ Scene.prototype.alt_skin = function () {
         this.sky=this.sky2;
 
         this.table.setAppearance(this.matWOODDARK);
-        this.bench_one.setAppearance(this.matWOODDARK);
-        this.bench_two.setAppearance(this.matWOODDARK);
+        this.bench.setAppearance(this.matWOODDARK);
         this.matWOOD=this.matWOODDARK;
     }
     else
@@ -696,8 +693,7 @@ Scene.prototype.alt_skin = function () {
         this.sky=this.sky1;
 
         this.table.setAppearance(this.matWOODBRIGHT);
-        this.bench_one.setAppearance(this.matWOODBRIGHT);
-        this.bench_two.setAppearance(this.matWOODBRIGHT);
+        this.bench.setAppearance(this.matWOODBRIGHT);
         this.matWOOD=this.matWOODBRIGHT;
     }
 };

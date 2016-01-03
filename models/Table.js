@@ -1,5 +1,3 @@
-var degToRad = Math.PI/180.0;
-
 /**
  * Table
  * @constructor
@@ -11,16 +9,39 @@ function Table(scene, app) {
  	this.app = app;
 
  	// Table's parts from other primitives
- 	this.table_feet = new MyCylinder(scene, 10, 2, 2, 10, 100);
  	this.table_top_bottom = new MyRectangle(scene, -9, 9, 9, -9);
  	this.table_top_bottom.updateTex(1, 1);
 
  	this.table_sides = new MyRectangle(scene, -9, 1, 9, -1);
  	this.table_sides.updateTex(1, 1);
 
- 	this.table_bottom = new MyCylinder(scene, 2, 2, 3, 10, 100);
- 	this.table_base = new MyCylinder(scene, 0.5, 3, 3, 10, 100);
- 	this.table_circle = new MyCircle(scene, 3, 100);
+ 	var controlpoints = [	// U = 0
+						[ // V = 0..2;
+							 [-4, -5.75, 2, 1],
+							 [-2, 0, 0, 1],
+							 [-2, 5.75, 0, 1]
+							
+						],
+						// U = 1
+						[ // V = 0..2
+							 [0, -5.75, 2, 1],
+							 [0, 0, -2, 1],
+							 [0, 5.75, 0, 1]
+						],
+						// U = 2
+						[ // V = 0..2
+							 [4, -5.75, 2, 1],
+							 [2, 0, 0, 1],
+							 [2, 5.75, 0, 1]
+						]
+	];
+    this.leg = new MyPatch(scene, 2, 20, 2, 20, controlpoints);
+
+    this.base_bottom = new MyRectangle(scene, -4, 4, 4, -4);
+ 	this.base_bottom.updateTex(1, 1);
+
+ 	this.base_side = new MyRectangle(scene, -4, 0.25, 4, -0.25);
+ 	this.base_side.updateTex(1, 1);
 
  };
 
@@ -75,38 +96,66 @@ Table.prototype.display = function() {
 		this.table_sides.display();
 	this.scene.popMatrix();
 
-	//Table feet
+	//leg
+
 	this.scene.pushMatrix();
-		this.scene.translate(0, -13, 0);
-		this.scene.rotate(-90*degToRad, 1, 0, 0);
-		this.app.apply();
-		this.table_feet.display();
+		this.scene.translate(0,-8.75,2);
+		this.leg.display();
 	this.scene.popMatrix();
 
-	//Table bottom
 	this.scene.pushMatrix();
-		this.scene.translate(0, -13, 0);
-		this.scene.rotate(90*degToRad, 1, 0, 0);
-		this.app.apply();
-		this.table_bottom.display();
+		this.scene.rotate(90*degToRad,0,1,0);
+		this.scene.translate(0,-8.75,2);
+		this.leg.display();
 	this.scene.popMatrix();
 
-	//Table base
+	this.scene.pushMatrix();
+		this.scene.rotate(180*degToRad,0,1,0);
+		this.scene.translate(0,-8.75,2);
+		this.leg.display();
+	this.scene.popMatrix();
+
+	this.scene.pushMatrix();
+		this.scene.rotate(-90*degToRad,0,1,0);
+		this.scene.translate(0,-8.75,2);
+		this.leg.display();
+	this.scene.popMatrix();
+
+	//leg base
+
 	this.scene.pushMatrix();
 		this.scene.translate(0, -15, 0);
-		this.scene.rotate(90*degToRad, 1, 0, 0);
+		this.scene.rotate(-270*degToRad, 1, 0, 0);
 		this.app.apply();
-		this.table_base.display();
+		this.base_bottom.display();
 	this.scene.popMatrix();
 
-	//Table base circle
 	this.scene.pushMatrix();
-		this.scene.translate(0, -15.5, 0);
-		this.scene.rotate(90*degToRad, 1, 0, 0);
+		this.scene.translate(0, -14.75 ,4);
 		this.app.apply();
-		this.table_circle.display();
+		this.base_side.display();
 	this.scene.popMatrix();
 
+	this.scene.pushMatrix();
+		this.scene.translate(0, -14.75, -4);
+		this.scene.rotate(180*degToRad, 0, 1, 0);
+		this.app.apply();
+		this.base_side.display();
+	this.scene.popMatrix();
+
+	this.scene.pushMatrix();
+		this.scene.translate(4, -14.75, 0);
+		this.scene.rotate(90*degToRad, 0, 1, 0);
+		this.app.apply();
+		this.base_side.display();
+	this.scene.popMatrix();
+
+	this.scene.pushMatrix();
+		this.scene.translate(-4, -14.75, 0);
+		this.scene.rotate(-90*degToRad, 0, 1, 0);
+		this.app.apply();
+		this.base_side.display();
+	this.scene.popMatrix();
 };
 
 
